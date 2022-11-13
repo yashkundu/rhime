@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package pkg;
+
+message SingleUser {
+    string userId = 1;
+}
+
+message Minions {
+    repeated bytes userIds = 1;
+}
+
+message Messiahs {
+    repeated bytes userIds = 1;
+}
+
+
+service UserGraphView {
+    rpc getMinions(SingleUser) returns (stream Minions) {}
+    rpc getMessiahs(SingleUser) returns (stream Messiahs) {}
+}

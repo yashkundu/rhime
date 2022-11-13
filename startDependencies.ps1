@@ -1,0 +1,1 @@
+wt -p "Windows PowerShell" --title "etcd" --tabColor '#00c3ff' cmd /k docker start -ia etcd `; new-tab -p "Windows PowerShell" --title "nats" --tabColor '#3ebd9d' cmd /k docker start -ia nats `; new-tab -p "Ubuntu" --title "redis" --tabColor '#fc3e28' `; new-tab -p "Windows PowerShell" --title "mongodb" --tabColor '#7dfc28' `; new-tab -p "Windows PowerShell" --title "mongosh"

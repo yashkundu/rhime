@@ -1,0 +1,43 @@
+{
+  "name": "client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev -p 80",
+    "lint": "next lint",
+    "build": "next build",
+    "start": "next start -p 80"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "next": "^13.0.0"
+  },
+  "devDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-loader-spinner": "^5.3.4",
+    "react-modal": "^3.15.1",
+    "react-moment": "^1.1.2",
+    "@emotion/react": "^11.10.4",
+    "@emotion/server": "^11.10.0",
+    "@emotion/styled": "^11.10.4",
+    "@heroicons/react": "^2.0.11",
+    "@mui/icons-material": "^5.10.6",
+    "@mui/material": "^5.10.6",
+    "axios": "^0.27.2",
+    "date-fns": "^2.29.3",
+    "framer-motion": "^7.3.6",
+    "lodash": "^4.17.21",
+    "@kamona/tailwindcss-perspective": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.3",
+    "autoprefixer": "^10.4.12",
+    "eslint": "8.23.1",
+    "eslint-config-next": "12.3.1",
+    "msw": "^0.47.3",
+    "postcss": "^8.4.16",
+    "tailwindcss": "^3.1.8"
+  }
+}

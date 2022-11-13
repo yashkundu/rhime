@@ -1,0 +1,205 @@
+version: '3.9'
+
+services:
+
+  auth:
+    build: ./auth
+    restart: always
+    networks:
+      - net
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+    env_file:
+      - ./authSecrets.env
+
+  comment:
+    build: ./comment
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+
+  feed:
+    build: ./feed
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+      - redis_url=redis:6379
+      - userGraphView_url=userGraphView:80
+
+  gateway:
+    build: ./gateway
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+    ports:
+      - "80:80"
+    env_file:
+      - ./authSecrets.env
+
+  like:
+    build: ./like
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+      - redis_url=redis:6379
+
+  likeBatchUpdater:
+    build: ./likeBatchUpdater
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+
+  # # add a cron job that daily update the like Count from persisted storage
+  likeCount:
+    build: ./likeCount
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+
+  likeUpdater:
+    build: ./likeUpdater
+    networks:
+      - net
+    restart: always
+    environment:
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+      - redis_url=redis:6379
+
+  post:
+    build: ./post
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+
+  recommendation:
+    build: ./recommendation
+    networks:
+      - net
+    restart: always
+    environment:
+      - mongo_url=mongo:27017
+      - redis_url=redis:6379
+
+  spotify:
+    build: ./spotify
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+      - redis_url=redis:6379
+
+  user:
+    build: ./user
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+    env_file:
+      - ./spotifySecrets.env
+
+  userGraph:
+    build: ./userGraph
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - nats_url=nats:4222
+      - mongo_url=mongo:27017
+
+  userGraphView:
+    build: ./userGraphView
+    networks:
+      - net
+    restart: always
+    environment:
+      - APP_PORT=80
+      - mongo_url=mongo:27017
+
+  client:
+    build: ./client
+    networks:
+      - net
+    restart: always
+
+  redis:
+    image: redis:alpine
+    networks:
+      - net
+    expose:
+      - 6379
+    volumes:
+      - "redisStorage:/data"
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+
+  nats:
+    image: nats:alpine
+    networks:
+      - net
+    expose:
+      - 4222
+    volumes:
+      - "jsStorage:/tmp/nats/jetstream"
+    command: ["nats-server", "-n", "nats_server", "-js"]
+
+  mongo:
+    image: mongo
+    restart: always
+    networks:
+      - net
+    expose:
+      - 27017
+    volumes:
+      - "mongoStorage:/data/db"
+      - "./initMongoDocker/:/docker-entrypoint-initdb.d/"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    command: ["mongod", "--bind_ip_all", "--replSet", "rep0"]
+    
+volumes:
+  jsStorage:
+    driver: local
+  mongoStorage:
+    driver: local
+  redisStorage:
+    driver: local
+
+networks:
+  net:
+    driver: bridge

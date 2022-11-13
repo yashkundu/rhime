@@ -1,0 +1,11 @@
+node_modules/
+.next/
+build/
+
+#Sub modules
+common/
+discovery/
+events/
+
+# Secret file
+*.env
