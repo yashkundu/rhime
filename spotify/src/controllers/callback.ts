@@ -13,7 +13,7 @@ import {nats, UserAuthorizedEvent, subject, noun, verb} from '@rhime/events'
 export const callback = async (req: Request, res: Response) => {
     
     const {code, state} = req.query
-    const redirect_uri = `${process.env.gateway_url}/api/spotify/callback`
+    const redirect_uri = `http://${req.headers.host}/api/spotify/callback`
 
     if(!code){
         // authorization failed

@@ -17,7 +17,7 @@ declare global{
 }
 
 const gatewayAuthenticator = (req: Request, res: Response, next: NextFunction) => {
-    req.headers['user-auth'] = '';
+    delete req.headers['user-auth'];
     const accessToken = req.signedCookies?.accessToken
     if(!accessToken) return next()
     try {

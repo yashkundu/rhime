@@ -1,21 +1,21 @@
 
-declare enum service {
-    auth = "auth",
-    feed = "feed",
-    notification = "notification",
-    post = "post",
-    comment = "comment",
-    recommendation = "recommendation",
-    spotify = "spotify",
-    user = "user",
-    userGraph = "userGraph",
-    like = "like",
-    likeCount = "likeCount",
-    client = "client",
+const service = {
+    auth: "auth",
+    feed: "feed",
+    notification: "notification",
+    post: "post",
+    comment: "comment",
+    recommendation: "recommendation",
+    spotify: "spotify",
+    user: "user",
+    userGraph: "user-graph",
+    like: "like",
+    likeCount: "like-count",
+    client: "client",
 }
 
 interface ServiceRecord {
-    serviceName: service;
+    serviceName: string;
     endpoint: string;
     authentication: boolean;
     authorization?: boolean;
@@ -68,7 +68,7 @@ const PROXY_ROUTES: ServiceRecord[] = [
         serviceName: service.spotify,
         endpoint: '/api/spotify',
         authentication: true,
-        changeOrigin: true
+        changeOrigin: false
     },
     {
         serviceName: service.userGraph,

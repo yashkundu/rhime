@@ -35,7 +35,13 @@ const start = async () => {
         })
         console.log('Like-Updater service connected to NATS ... ');
 
-        await ds.connect({path: process.env.redis_url})
+        const host = (process.env.redis_url as string).split(':')[0]
+        const port = Number((process.env.redis_url as string).split(':')[1])
+
+        await ds.connect({
+            host: host,
+            port: port
+        })
         console.log('Like-Updater service connected to Redis ... ');
 
 

@@ -22,14 +22,13 @@ proxy.on('proxyReq', function(proxyReq, req, res, options) {
 // only auth service has req.user , all others have req.userAuth
 const proxyMware = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        req.signedCookies
         for(const record of PROXY_ROUTES) {
             if(req.url.startsWith(record.endpoint)) {
                 if(record.authentication) isAuthenticated(req)
                 if(record.authorization) isAuthorized(req)
-
+                const url = `http://${record.serviceName}:80`
                 proxy.web(req, res, {
-                    target: record.serviceName,
+                    target: url,
                     changeOrigin: record.changeOrigin
                 })
                 return;

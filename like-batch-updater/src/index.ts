@@ -24,7 +24,9 @@ const pullMsgs = (pullConsumer: JetStreamPullSubscription) => {
 const start = async () => {
     try {
 
-        await mongo.connect('mongodb://127.0.0.1:27017/?directConnection=true')
+        const mongo_url = 'mongodb://' + process.env.mongo_url + '/?directConnection=true'
+
+        await mongo.connect(mongo_url)
         console.log('Like-BatchUpdater service connected to MongoDb ... ');
 
         await nats.connect({

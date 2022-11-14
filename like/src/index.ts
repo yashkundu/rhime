@@ -38,16 +38,19 @@ const start = async () => {
             if(!process.env[x]) throw new Error('Environment variables not declared')
         }
 
-        await mongo.connect('mongodb://127.0.0.1:27017/?directConnection=true')
+        const mongo_url = 'mongodb://' + process.env.mongo_url + '/?directConnection=true'
+
+        await mongo.connect(mongo_url)
         console.log('Like service connected to MongoDb ... ');
 
         await initNATS()
 
-        
+        const host = (process.env.redis_url as string).split(':')[0]
+        const port = Number((process.env.redis_url as string).split(':')[1])
 
         await ds.connect({
-            host: '127.0.0.1',
-            port: 6379
+            host: host,
+            port: port
         })
         console.log('Like service connected to Redis ... ');
 

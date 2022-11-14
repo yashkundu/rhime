@@ -45,7 +45,14 @@ const start = async () => {
         await mongo.connect(mongo_url)
         console.log('Feed service connected to MongoDb ... ');
 
-        await ds.connect({path: process.env.redis_url})
+
+        const host = (process.env.redis_url as string).split(':')[0]
+        const port = Number((process.env.redis_url as string).split(':')[1])
+
+        await ds.connect({
+            host: host,
+            port: port
+        })
         console.log('Feed service connected to Redis instance ... ');
 
         ds.defineCommands()

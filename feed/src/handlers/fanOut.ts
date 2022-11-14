@@ -5,7 +5,7 @@ import { Minions } from '../interfaces/minionsInterface'
 
 
 const fanOutPost = async (ownerId: string, postId: string) => {
-    const call = UserGraphView.service.getMinions({userId: ownerId})
+    const call = UserGraphView.getMinions({userId: ownerId})
 
     let promises = []
 

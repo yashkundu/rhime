@@ -11,6 +11,10 @@ services:
       - APP_PORT=80
       - nats_url=nats:4222
       - mongo_url=mongo:27017
+    depends_on:
+      - nats
+      - mongo
+      - gateway
     env_file:
       - ./authSecrets.env
 
@@ -23,6 +27,10 @@ services:
       - APP_PORT=80
       - nats_url=nats:4222
       - mongo_url=mongo:27017
+    depends_on:
+      - nats
+      - mongo
+      - gateway
 
   feed:
     build: ./feed
@@ -34,7 +42,13 @@ services:
       - nats_url=nats:4222
       - mongo_url=mongo:27017
       - redis_url=redis:6379
-      - userGraphView_url=userGraphView:80
+      - userGraphView_url=user-graph-view:80
+    depends_on:
+      - nats
+      - mongo
+      - redis
+      - user-graph-view
+      - gateway
 
   gateway:
     build: ./gateway
@@ -48,6 +62,8 @@ services:
       - "80:80"
     env_file:
       - ./authSecrets.env
+    depends_on:
+      - nats
 
   like:
     build: ./like
@@ -59,20 +75,28 @@ services:
       - nats_url=nats:4222
       - mongo_url=mongo:27017
       - redis_url=redis:6379
+    depends_on:
+      - nats
+      - mongo
+      - redis
+      - gateway
 
-  likeBatchUpdater:
-    build: ./likeBatchUpdater
+  like-batch-updater:
+    build: ./like-batch-updater
     networks:
       - net
     restart: always
     environment:
-      - APP_PORT=80
       - nats_url=nats:4222
       - mongo_url=mongo:27017
+    depends_on:
+      - nats
+      - mongo
+      - gateway
 
   # # add a cron job that daily update the like Count from persisted storage
-  likeCount:
-    build: ./likeCount
+  like-count:
+    build: ./like-count
     networks:
       - net
     restart: always
@@ -80,9 +104,13 @@ services:
       - APP_PORT=80
       - nats_url=nats:4222
       - mongo_url=mongo:27017
+    depends_on:
+      - nats
+      - mongo
+      - gateway
 
-  likeUpdater:
-    build: ./likeUpdater
+  like-updater:
+    build: ./like-updater
     networks:
       - net
     restart: always
@@ -90,6 +118,11 @@ services:
       - nats_url=nats:4222
       - mongo_url=mongo:27017
       - redis_url=redis:6379
+    depends_on:
+      - nats
+      - mongo
+      - redis
+      - gateway
 
   post:
     build: ./post
@@ -100,6 +133,10 @@ services:
       - APP_PORT=80
       - nats_url=nats:4222
       - mongo_url=mongo:27017
+    depends_on:
+      - nats
+      - mongo
+      - gateway
 
   recommendation:
     build: ./recommendation
@@ -107,8 +144,13 @@ services:
       - net
     restart: always
     environment:
+      - APP_PORT=80
       - mongo_url=mongo:27017
       - redis_url=redis:6379
+    depends_on:
+      - mongo
+      - redis
+      - gateway
 
   spotify:
     build: ./spotify
@@ -120,6 +162,14 @@ services:
       - nats_url=nats:4222
       - mongo_url=mongo:27017
       - redis_url=redis:6379
+    env_file:
+      - ./spotifySecrets.env
+    depends_on:
+      - nats
+      - mongo
+      - redis
+      - gateway
+    
 
   user:
     build: ./user
@@ -131,10 +181,14 @@ services:
       - nats_url=nats:4222
       - mongo_url=mongo:27017
     env_file:
-      - ./spotifySecrets.env
+      - ./awsSecrets.env
+    depends_on:
+      - nats
+      - mongo
+      - gateway
 
-  userGraph:
-    build: ./userGraph
+  user-graph:
+    build: ./user-graph
     networks:
       - net
     restart: always
@@ -142,15 +196,22 @@ services:
       - APP_PORT=80
       - nats_url=nats:4222
       - mongo_url=mongo:27017
+    depends_on:
+      - nats
+      - mongo
+      - gateway
 
-  userGraphView:
-    build: ./userGraphView
+  user-graph-view:
+    build: ./user-graph-view
     networks:
       - net
     restart: always
     environment:
       - APP_PORT=80
       - mongo_url=mongo:27017
+    depends_on:
+      - mongo
+      - gateway
 
   client:
     build: ./client

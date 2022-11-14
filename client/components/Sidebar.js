@@ -1,4 +1,3 @@
-import Image from "next/image";
 import SidebarMenuItem from "./SidebarMenuItem";
 import {
   EllipsisHorizontalCircleIcon,
@@ -83,21 +82,21 @@ export default function Sidebar({user}) {
     <div className="xl:ml-[9%] lg:ml-[10%] md:ml-[6%] sm:ml-[6%] flex flex-col xl:p-[8px] xl:items-start fixed h-full">
       {/* Rhime Logo */}
       <div className="cursor-pointer hidden mt-3 xl:inline xl:px-1">
-        <Image
-          width="150"
+        <img
           height="150"
+          width="150"
           alt="Rhime"
           src="https://i.ibb.co/f0MpNGJ/LogoName.png"
-          ></Image>
+          ></img>
       </div>
 
       <div className="cursor pointer p-[8px]  xl:hidden">
-        <Image
-          width="40"
+        <img
           height="40"
+          width="40"
           alt="R"
           src="https://i.ibb.co/gj8njW8/Logo.png"
-          ></Image>
+          ></img>
       </div>
 
       {/* Menu */}

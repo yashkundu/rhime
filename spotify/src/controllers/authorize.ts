@@ -11,7 +11,7 @@ export const authorize = (req: Request, res: Response) => {
 
     const state = crypto.randomBytes(8).toString('hex')
     const scope = userScopes.join(' ')
-    const redirect_uri = `${process.env.gateway_url}/api/spotify/callback`
+    const redirect_uri = `http://${req.headers.host}/api/spotify/callback`
 
     const qs = new URLSearchParams({
         response_type: 'code',

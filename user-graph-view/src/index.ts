@@ -10,7 +10,6 @@ import { Minions } from './interfaces/minionsInterface'
 import { Messiahs } from './interfaces/messiahsInterface'
 import { SingleUser } from './interfaces/userInterface'
 
-import { Registry, service } from '@rhime/discovery'
 
 // const userId = new ObjectId('208e8551b309b22d2bdfc6d8')
 
@@ -82,7 +81,7 @@ async function getMessiahs(call: grpc.ServerWritableStream<SingleUser, Messiahs>
 const start = async () => {
     try {
 
-        const envVariables = ['APP_PORT', 'APP_URL', 'ETCD_KEY_TTL']
+        const envVariables = ['APP_PORT', 'mongo_url']
 
         for(const x of envVariables){
             if(!process.env[x]) throw new Error('Environment variables not declared')
@@ -103,14 +102,6 @@ const start = async () => {
             }
             server.start()
             console.log(`User Graph View server started listening on port ${process.env.APP_PORT}...`)
-
-            const registry = new Registry({
-                hosts: process.env.etcd_url as string
-            })
-
-            await registry.register(service.userGraphView, {
-                url: process.env.APP_URL as string
-            }, {ttl: Number(process.env.ETCD_KEY_TTL)})
 
         })
 

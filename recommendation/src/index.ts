@@ -41,8 +41,13 @@ const start = async () => {
 const startLtWorker = async () => {
     ltTaskWorker.manager.initialFetch = initialFetch
     ltTaskWorker.manager.scheduledFetch = scheduledFetch
+
+    const host = (process.env.redis_url as string).split(':')[0]
+    const port = Number((process.env.redis_url as string).split(':')[1])
+
     await ltTaskWorker.start({
-        path: process.env.redis_url,
+        host: host,
+        port: port,
         maxRetriesPerRequest: null
     })
     console.log('LtWorker for bullmq is connected ...');
@@ -51,16 +56,26 @@ const startLtWorker = async () => {
 const startStWorker = async () => {
     stTaskWorker.manager.batchedFavourites = batchedFavourites
     stTaskWorker.manager.batchedRecommends = batchedRecommends
+
+    const host = (process.env.redis_url as string).split(':')[0]
+    const port = Number((process.env.redis_url as string).split(':')[1])
+    
     await stTaskWorker.start({
-        path: process.env.redis_url,
+        host: host,
+        port: port,
         maxRetriesPerRequest: null
     })
     console.log('StWorker for bullmq is connected ...');
 }
 
 const startStQueue = async () => {
+
+    const host = (process.env.redis_url as string).split(':')[0]
+    const port = Number((process.env.redis_url as string).split(':')[1])
+
     await stTaskQueue.connect({
-        path: process.env.redis_url
+        host: host,
+        port: port,
     })
     console.log('StQueue for bullmq is connected ...');
 }

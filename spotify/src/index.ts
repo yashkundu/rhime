@@ -23,7 +23,7 @@ const start = async () => {
         // implement a fucntion to check if all the env variables are set
         // other throw a big nasty error :)
         // envCheckerFunc() 
-        const envVariables = ['SPOTIFY_CLIENT_KEY', 'SPOTIFY_CLIENT_SECRET','APP_PORT', 'mongo_url', 'nats_url', 'redis_url']
+        const envVariables = ['APP_PORT', 'mongo_url', 'nats_url', 'redis_url']
 
         for(const x of envVariables){
             if(!process.env[x]) throw new Error('Environment variables not declared')
@@ -39,8 +39,14 @@ const start = async () => {
         })
         console.log('Spotify service connected to NATS ... ');
 
+        const host = (process.env.redis_url as string).split(':')[0]
+        const port = Number((process.env.redis_url as string).split(':')[1])
 
-        await ltTaskQueue.connect({path: process.env.redis_url})
+
+        await ltTaskQueue.connect({
+            host: host,
+            port: port
+        })
         console.log('BullMQ\'s ltQueue to the service ... ')
 
         await scheduleUpdates()

@@ -31,7 +31,7 @@ const start = async () => {
         // implement a fucntion to check if all the env variables are set
         // other throw a big nasty error :)
         // envCheckerFunc() 
-        const envVariables = ['APP_PORT', 'mongo_url', 'nats_url', 'redis_url']
+        const envVariables = ['APP_PORT', 'mongo_url', 'nats_url']
 
         for(const x of envVariables){
             if(!process.env[x]) throw new Error('Environment variables not declared')
