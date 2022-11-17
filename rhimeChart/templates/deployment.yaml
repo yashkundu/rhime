@@ -13,41 +13,64 @@ spec:
       labels:
         app: {{ $service.serviceName }}-label
     spec:
+      {{- if $service.volumes }}
+      volumes:
+        {{- range $index, $volume := $service.volumes }}
+        - name: {{ $volume.name }}
+        {{- if $volume.claimName }}
+          persistentVolumeClaim:
+            claimName: {{ $volume.claimName }}
+        {{- else }}
+          configMap:
+            name: {{ $volume.configMap.name }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
       containers:
         - name: {{ $service.serviceName }}-container
           image: {{ if $service.image }}{{ $service.image }}{{ else }}yashkundu/{{ $service.serviceName }}{{ end }}
           imagePullPolicy: IfNotPresent
-          {{- if $service.args  }}
-          args: {{ $service.args }}
+          resources:
+            limits:
+              memory: {{ if $service.memory }}{{ $service.memory }}{{ else }}"128Mi"{{ end }}
+              cpu: {{ if $service.cpu }}{{ $service.cpu }}{{ else }}"500m"{{ end }}
+          {{- if $service.command }}
+          command:
+            {{- range $index, $cmd := $service.command }}
+            - {{ $cmd }}
+            {{- end }}
           {{- end }}
           {{- if $service.volumes }}
           volumeMounts:
             {{- range $index, $volume := $service.volumes }}
-            - name: {{- $volume.name }}
-              mountPath: {{- $volume.mountPath }}
+            - mountPath: {{ $volume.mountPath }}
+              name: {{ $volume.name }}
+              {{- if $volume.subPath }}
+              subPath: {{ $volume.subPath }}
+              {{- end }}
             {{- end }}
           {{- end }}
           env:  
             {{- if and $service.env $service.env.APP_PORT }}
             - name: APP_PORT
-              value: {{ $.Values.APP_PORT }}
+              value: {{ $.Values.APP_PORT | quote}}
             {{- end }}
             {{- if and $service.env $service.env.nats_url }}
             - name: nats_url
-              value: {{ $.Values.nats_url }}
+              value: {{ $.Values.nats_url | quote }}
             {{- end }}
             {{- if and $service.env $service.env.mongo_url }}
             - name: mongo_url
-              value: {{ $.Values.mongo_url }}
+              value: {{ $.Values.mongo_url | quote }}
             {{- end }}
             {{- if and $service.env $service.env.redis_url }}
             - name: redis_url
-              value: {{ $.Values.redis_url }}
+              value: {{ $.Values.redis_url | quote }}
             {{- end }}
             {{- if $service.extra_env }}
             {{- range $index, $env := $service.extra_env}}
             - name : {{ $env.name }} 
-              value: {{ $env.value }}
+              value: {{ $env.value | quote}}
             {{- end }}
             {{- end }}
             {{- if $service.secret_env }}
@@ -59,18 +82,6 @@ spec:
                   key: {{ $secret.key }}
             {{- end }}
             {{- end }}
-      {{- if $service.volumes }}
-      volumes:
-        {{- range $index, $volume := $service.volumes }}
-        - name: {{ $volume.name }}
-        {{- if $volume.claimName }}
-          persistentVolumeClaim:
-            claimName: {{ $volume.claimName }}
-        {{- else }}
-          configMap:
-            name: {{ $volume.configMap }}
-        {{- end }}
-        {{- end }}
-      {{- end }}
+      
 ---
 {{- end }}

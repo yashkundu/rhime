@@ -3,7 +3,25 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: data-sc
+  name: mongo-sc
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nats-sc
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: redis-sc
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
 
@@ -14,17 +32,52 @@ volumeBindingMode: WaitForFirstConsumer
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: data-pv
+  name: mongo-pv
   labels:
     type: local
 spec:
-  storageClassName: data-sc
+  storageClassName: mongo-sc
   capacity:
-    storage: 7Gi
+    storage: 2Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: ".../mnt/data"
+    path: "/mnt/data/mongo"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nats-pv
+  labels:
+    type: local
+spec:
+  storageClassName: nats-sc
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/nats"
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: redis-pv
+  labels:
+    type: local
+spec:
+  storageClassName: redis-sc
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/redis"
+
 
 ---
 
@@ -35,7 +88,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: mongo-pvc
 spec:
-  storageClassName: data-sc
+  storageClassName: mongo-sc
   accessModes:
     - ReadWriteOnce
   resources:
@@ -49,7 +102,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: nats-pvc
 spec:
-  storageClassName: data-sc
+  storageClassName: nats-sc
   accessModes:
     - ReadWriteOnce
   resources:
@@ -63,7 +116,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: redis-pvc
 spec:
-  storageClassName: data-sc
+  storageClassName: redis-sc
   accessModes:
     - ReadWriteOnce
   resources:

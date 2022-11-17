@@ -1,7 +1,56 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: initMongoConfigMap
+  name: init-mongo-configmap
 data:
-  initRepl.js: |
-    rs.initiate()
+  init-repl.js: |
+    try{
+      rs.initiate()
+      console.log('------------------------------Success-------------------------------------')
+    } catch(err) {
+      console.log('------------------------------Error---------------------------------------')
+      console.log(err)
+    }
+
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: wired-tiger-config
+data:
+  mongod.conf: |
+    ##
+    ## For list of options visit:
+    ## https://docs.mongodb.org/manual/reference/configuration-options/
+    ##
+
+    # systemLog options - How to do logging
+    systemLog:
+      # Runs the mongod in a quiet mode that attempts to limit the 
+      # amount of output
+      quiet: true
+
+    # replica set
+    replication:
+      replSetName: "rs0"
+
+
+    # net options - Network interfaces settings
+    net:
+      # Specify port number (27017 by default)
+      port: 27017
+
+
+    # storage options - How and where to store data
+    storage:
+      # Directory for datafiles (defaults to /data/db/)
+      wiredTiger:
+        engineConfig:
+          configString: cache_size=400M
+
+    # replication options - Configures replication
+    replication:
+      # Specifies a maximum size in megabytes for the replication 
+      # operation log (i.e. the oplog,
+      # 5% of disk space by default)
+      oplogSizeMB: 64

@@ -4,6 +4,8 @@ build/
 
 secrets.yaml
 
+mnt/
+
 #Sub modules
 common/
 discovery/

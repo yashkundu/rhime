@@ -17,9 +17,9 @@ services:
       nats_url: true
       mongo_url: true
     secret_env:
-      - secretName: authSecret
+      - secretName: auth-secret
         key:  ACCESS_TOKEN_SECRET
-      - secretName: authSecret
+      - secretName: auth-secret
         key:  SIGNED_COOKIE_SECRET
 
   - serviceName: client
@@ -52,9 +52,9 @@ services:
       APP_PORT: true 
       nats_url: true
     secret_env:
-      - secretName: authSecret
+      - secretName: auth-secret
         key:  ACCESS_TOKEN_SECRET
-      - secretName: authSecret
+      - secretName: auth-secret
         key:  SIGNED_COOKIE_SECRET
 
   - serviceName: like
@@ -98,8 +98,8 @@ services:
   - serviceName: recommendation
     replicaCount: 1
     env: 
-      nats_url: true
       mongo_url: true
+      redis_url: true
 
   - serviceName: spotify
     replicaCount: 1
@@ -110,9 +110,9 @@ services:
       mongo_url: true
       redis_url: true
     secret_env:
-      - secretName: spotifySecret
+      - secretName: spotify-secret
         key:  SPOTIFY_CLIENT_KEY
-      - secretName: spotifySecret
+      - secretName: spotify-secret
         key:  SPOTIFY_CLIENT_SECRET
 
   - serviceName: user
@@ -123,9 +123,9 @@ services:
       nats_url: true
       mongo_url: true
     secret_env:
-      - secretName: awsSecret
+      - secretName: aws-secret
         key:  AWS_ACCESS_KEY_ID
-      - secretName: awsSecret
+      - secretName: aws-secret
         key:  AWS_SECRET_ACCESS_KEY
 
   - serviceName: user-graph
@@ -144,24 +144,37 @@ services:
       mongo_url: true
 
   - serviceName: mongo
-    image: mongo
+    image: mongo:6.0.3
     replicaCount: 1
+    memory: "1028Mi"
+    cpu: "1200m"
     volumes:
       - name: mongo-storage
         claimName: mongo-pvc
         mountPath: /data/db
-      - name: initDB
-        configMap: initMongoConfigMap
-        mountPath: /docker-entrypoint-initdb.d
+      - name: init-mongo-configmap
+        mountPath: /docker-entrypoint-initdb.d/init-repl.js
+        subPath: init-repl.js
+        configMap:
+          name: init-mongo-configmap
+      - name: wired-tiger-config
+        mountPath: /etc/mongod.conf
+        subPath: mongod.conf
+        configMap:
+          name: wired-tiger-config
     serviceType: ClusterIP
     servicePort: 27017
     extra_env:
       - name: ALLOW_EMPTY_PASSWORD
         value: yes
-    args: ["mongod", "--bind_ip_all", "--replSet", "rep0"]
+    command:
+      - /usr/local/bin/docker-entrypoint.sh
+      - "mongod"
+      # bug
+      - "-f/etc/mongod.conf"
 
   - serviceName: nats
-    image: nats:alpine
+    image: nats:2.9.6-alpine3.16
     replicaCount: 1
     volumes:
       - name: nats-storage
@@ -169,10 +182,14 @@ services:
         mountPath: /tmp/nats/jetstream
     serviceType: ClusterIP
     servicePort: 4222
-    args: ["nats-server", "-n", "nats_server", "-js"]
-    
+    command:
+      - /usr/local/bin/docker-entrypoint.sh
+      - nats-server
+      - "-js"
+
+
   - serviceName: redis
-    image: redis:alpine
+    image: redis:7.0.5-alpine3.16
     replicaCount: 1
     volumes:
       - name: redis-storage
@@ -180,5 +197,9 @@ services:
         mountPath: /data
     serviceType: ClusterIP
     servicePort: 6379
-    args: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    command:
+      - /usr/local/bin/docker-entrypoint.sh
+      - redis-server
+      - "--save 60 1"
+      - "--loglevel warning"
 
