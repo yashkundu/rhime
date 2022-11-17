@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-graph-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-graph-label
+  template:
+    metadata:
+      labels:
+        app: user-graph-label
+    spec:
+      containers:
+        - name: user-graph-container
+          image: user-graph-image
+          env:
+            - name: APP_PORT
+              value: 80
+            - name: nats_url
+              value: nats:4222
+            - name: mongo_url
+              value: mongo:27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-graph
+spec:
+  selector:
+    app: user-graph-label
+  type: ClusterIP
+  ports:
+    - containerPort: 80

@@ -1,0 +1,184 @@
+# values of common environment variables
+APP_PORT: 80
+nats_url: nats:4222
+mongo_url: mongo:27017
+redis_url: redis:6379
+
+
+
+
+services:
+
+  - serviceName: auth
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+    secret_env:
+      - secretName: authSecret
+        key:  ACCESS_TOKEN_SECRET
+      - secretName: authSecret
+        key:  SIGNED_COOKIE_SECRET
+
+  - serviceName: client
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+
+  - serviceName: comment
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+
+  - serviceName: feed
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+      redis_url: true
+
+  - serviceName: gateway
+    replicaCount: 1
+    serviceType: LoadBalancer
+    env: 
+      APP_PORT: true 
+      nats_url: true
+    secret_env:
+      - secretName: authSecret
+        key:  ACCESS_TOKEN_SECRET
+      - secretName: authSecret
+        key:  SIGNED_COOKIE_SECRET
+
+  - serviceName: like
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+      redis_url: true
+
+  - serviceName: like-batch-updater
+    replicaCount: 1
+    env: 
+      nats_url: true
+      mongo_url: true
+
+  - serviceName: like-count
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+
+  - serviceName: like-updater
+    replicaCount: 1
+    env: 
+      nats_url: true
+      mongo_url: true
+      redis_url: true
+
+  - serviceName: post
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+
+  - serviceName: recommendation
+    replicaCount: 1
+    env: 
+      nats_url: true
+      mongo_url: true
+
+  - serviceName: spotify
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+      redis_url: true
+    secret_env:
+      - secretName: spotifySecret
+        key:  SPOTIFY_CLIENT_KEY
+      - secretName: spotifySecret
+        key:  SPOTIFY_CLIENT_SECRET
+
+  - serviceName: user
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+    secret_env:
+      - secretName: awsSecret
+        key:  AWS_ACCESS_KEY_ID
+      - secretName: awsSecret
+        key:  AWS_SECRET_ACCESS_KEY
+
+  - serviceName: user-graph
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      nats_url: true
+      mongo_url: true
+
+  - serviceName: user-graph-view
+    replicaCount: 1
+    serviceType: ClusterIP
+    env: 
+      APP_PORT: true 
+      mongo_url: true
+
+  - serviceName: mongo
+    image: mongo
+    replicaCount: 1
+    volumes:
+      - name: mongo-storage
+        claimName: mongo-pvc
+        mountPath: /data/db
+      - name: initDB
+        configMap: initMongoConfigMap
+        mountPath: /docker-entrypoint-initdb.d
+    serviceType: ClusterIP
+    servicePort: 27017
+    extra_env:
+      - name: ALLOW_EMPTY_PASSWORD
+        value: yes
+    args: ["mongod", "--bind_ip_all", "--replSet", "rep0"]
+
+  - serviceName: nats
+    image: nats:alpine
+    replicaCount: 1
+    volumes:
+      - name: nats-storage
+        claimName: nats-pvc
+        mountPath: /tmp/nats/jetstream
+    serviceType: ClusterIP
+    servicePort: 4222
+    args: ["nats-server", "-n", "nats_server", "-js"]
+    
+  - serviceName: redis
+    image: redis:alpine
+    replicaCount: 1
+    volumes:
+      - name: redis-storage
+        claimName: redis-pvc
+        mountPath: /data
+    serviceType: ClusterIP
+    servicePort: 6379
+    args: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+

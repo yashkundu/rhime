@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: initMongoConfigMap
+data:
+  initRepl.js: |
+    rs.initiate()

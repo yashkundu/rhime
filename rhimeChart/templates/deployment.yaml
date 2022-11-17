@@ -1,0 +1,76 @@
+{{- range $index, $service := .Values.services }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $service.serviceName}}-depl
+spec:
+  replicas: {{ $service.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ $service.serviceName }}-label
+  template:
+    metadata:
+      labels:
+        app: {{ $service.serviceName }}-label
+    spec:
+      containers:
+        - name: {{ $service.serviceName }}-container
+          image: {{ if $service.image }}{{ $service.image }}{{ else }}yashkundu/{{ $service.serviceName }}{{ end }}
+          imagePullPolicy: IfNotPresent
+          {{- if $service.args  }}
+          args: {{ $service.args }}
+          {{- end }}
+          {{- if $service.volumes }}
+          volumeMounts:
+            {{- range $index, $volume := $service.volumes }}
+            - name: {{- $volume.name }}
+              mountPath: {{- $volume.mountPath }}
+            {{- end }}
+          {{- end }}
+          env:  
+            {{- if and $service.env $service.env.APP_PORT }}
+            - name: APP_PORT
+              value: {{ $.Values.APP_PORT }}
+            {{- end }}
+            {{- if and $service.env $service.env.nats_url }}
+            - name: nats_url
+              value: {{ $.Values.nats_url }}
+            {{- end }}
+            {{- if and $service.env $service.env.mongo_url }}
+            - name: mongo_url
+              value: {{ $.Values.mongo_url }}
+            {{- end }}
+            {{- if and $service.env $service.env.redis_url }}
+            - name: redis_url
+              value: {{ $.Values.redis_url }}
+            {{- end }}
+            {{- if $service.extra_env }}
+            {{- range $index, $env := $service.extra_env}}
+            - name : {{ $env.name }} 
+              value: {{ $env.value }}
+            {{- end }}
+            {{- end }}
+            {{- if $service.secret_env }}
+            {{- range $index, $secret := $service.secret_env}}
+            - name : {{ $secret.key }} 
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $secret.secretName }}
+                  key: {{ $secret.key }}
+            {{- end }}
+            {{- end }}
+      {{- if $service.volumes }}
+      volumes:
+        {{- range $index, $volume := $service.volumes }}
+        - name: {{ $volume.name }}
+        {{- if $volume.claimName }}
+          persistentVolumeClaim:
+            claimName: {{ $volume.claimName }}
+        {{- else }}
+          configMap:
+            name: {{ $volume.configMap }}
+        {{- end }}
+        {{- end }}
+      {{- end }}
+---
+{{- end }}

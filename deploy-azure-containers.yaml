@@ -1,0 +1,318 @@
+name: rhime
+apiVersion: '2021-10-01'
+location: centralindia
+
+properties:
+  containers:
+    - name: auth
+      properties:
+        image: auth
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+          - name: ACCESS_TOKEN_SECRET
+            value: secretKey
+          - name: SIGNED_COOKIE_SECRET
+            value: secretKey
+
+    - name: comment
+      properties:
+        image: comment
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+
+    - name: feed
+      properties:
+        image: feed
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+          - name: redis_url
+            value: redis:6379
+          - name: userGraphView_url
+            value: user-graph-view:80
+
+    - name: gateway
+      properties:
+        image: gateway
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: ACCESS_TOKEN_SECRET
+            value: secretKey
+          - name: SIGNED_COOKIE_SECRET
+            value: secretKey
+        ports:
+          - port: 80
+
+    - name: like
+      properties:
+        image: like
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+          - name: redis_url
+            value: redis:6379
+
+    - name: like-batch-updater
+      properties:
+        image: like-batch-updater
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+
+    - name: like-count
+      properties:
+        image: like-count
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+
+    - name: like-updater
+      properties:
+        image: like-updater
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+          - name: redis_url
+            value: redis:6379
+
+    - name: post
+      properties:
+        image: post
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+
+    - name: recommendation
+      properties:
+        image: recommendation
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: mongo_url
+            value: mongo:27017
+          - name: redis_url
+            value: redis:6379
+
+    - name: spotify
+      properties:
+        image: spotify
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+          - name: redis_url
+            value: redis:6379
+          - name: SPOTIFY_CLIENT_KEY
+            value: 5cc55c84a3014a4fb8322802d1a6c3ad
+          - name: SPOTIFY_CLIENT_SECRET
+            value: 122ccd2a34454c42814fd95d28119747
+
+    - name: user
+      properties:
+        image: user
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+          - name: AWS_ACCESS_KEY_ID
+            value: AKIAYTPZ46XVIGM36ZJR
+          - name: AWS_SECRET_ACCESS_KEY
+            value: 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
+
+    - name: user-graph
+      properties:
+        image: user-graph
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+
+    - name: user-graph-view
+      properties:
+        image: user-graph-view
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: mongo_url
+            value: mongo:27017
+
+    - name: client
+      properties:
+        image: client
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+
+    - name: redis
+      properties:
+        image: redis:alpine
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        volumeMounts:
+          - name: redis-storage
+            mountPath: /data
+        command: ['redis-server', '--save', '60', '1', '--loglevel', 'warning']
+
+    - name: nats
+      properties:
+        image: nats
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: APP_PORT
+            value: 80
+          - name: nats_url
+            value: nats:4222
+          - name: mongo_url
+            value: mongo:27017
+        volumeMounts:
+          - name: js-storage
+            mountPath: /tmp/nats/jetstream
+        command: ['nats-server', '-n', 'nats_server', '-js']
+
+    - name: mongo
+      properties:
+        image: mongo
+        resources:
+          requests:
+            cpu: 1
+            memoryInGB: 1
+        environmentVariables:
+          - name: ALLOW_EMPTY_PASSWORD
+            value: yes
+        volumeMounts:
+          - name: mongo-storage
+            mountPath: /data/db
+          - name: init-mount
+            mountPath: /docker-entrypoint-initdb.d/
+            readOnly: true
+        command: ['mongod', '--bind_ip_all', '--replSet', 'rep0']
+
+  restartPolicy: Always
+  osType: Linux
+  ipAddress:
+    type: Public
+    ports:
+      - protocol: tcp
+        port: 80
+  volumes:
+    - name: init-mount
+      azureFile:
+        shareName: init-mongo
+        readOnly: true
+        storageAccountName: rhimeStorage
+    - name: js-storage
+      azureFile:
+        shareName: js-share
+        storageAccountName: rhimeStorage
+    - name: mongo-storage
+      azureFile:
+        shareName: mongo-share
+        storageAccountName: rhimeStorage
+    - name: redis-storage
+      azureFile:
+        shareName: redis-share
+        storageAccountName: rhimeStorage

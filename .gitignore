@@ -2,6 +2,8 @@ node_modules/
 .next/
 build/
 
+secrets.yaml
+
 #Sub modules
 common/
 discovery/
