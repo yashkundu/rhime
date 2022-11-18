@@ -10,6 +10,8 @@ import { Minions } from './interfaces/minionsInterface'
 import { Messiahs } from './interfaces/messiahsInterface'
 import { SingleUser } from './interfaces/userInterface'
 
+import {ObjectId} from 'bson'
+
 
 // const userId = new ObjectId('208e8551b309b22d2bdfc6d8')
 
@@ -30,18 +32,22 @@ const protoPkg = protoDescriptor.pkg
 async function getMinions(call: grpc.ServerWritableStream<SingleUser, Minions>){
     console.log('getMinions Request from user : ', call.request.userId);
     try {
-        const cursor = Minion.find({messiahId: call.request.userId})
+        console.log('Requested userId -> ', call.request.userId)
+        const cursor = Minion.find({messiahId: new ObjectId(call.request.userId)})
         while(await cursor.hasNext()){
             const docs = cursor.readBufferedDocuments()
             const list: Buffer[] = []
             docs.forEach((doc) => {
                 list.push(doc.minionId.id)
             })
+            console.log('Minions list -> ', list)
             call.write({userIds: list})
         }
     } catch (error) {
         console.log(error);
+        throw error
     } finally {
+        console.log('ended stream')
         call.end();
     }
 }
@@ -49,18 +55,23 @@ async function getMinions(call: grpc.ServerWritableStream<SingleUser, Minions>){
 async function getMessiahs(call: grpc.ServerWritableStream<SingleUser, Messiahs>){
     console.log('getMessiahs Request from user : ', call.request.userId);
     try {
-        const cursor = Messiah.find({minionId: call.request.userId})
+        console.log('Requested userId -> ', call.request.userId)
+        const cursor = Messiah.find({minionId: new ObjectId(call.request.userId)})
         while(await cursor.hasNext()){
             const docs = cursor.readBufferedDocuments()
+            console.log('Fetched docs -> ', docs)
             const list: Buffer[] = []
             docs.forEach((doc) => {
                 list.push(doc.messiahId.id)
             })
+            console.log('Messiahs list -> ', list)
             call.write({userIds: list})
         }
     } catch (error) {
         console.log(error);
+        throw error
     } finally {
+        console.log('ended stream')
         call.end();
     }
     
@@ -107,6 +118,7 @@ const start = async () => {
 
     } catch (error) {
         console.log(error)
+        throw error
     }
 }
 

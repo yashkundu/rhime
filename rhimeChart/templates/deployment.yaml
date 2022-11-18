@@ -33,7 +33,7 @@ spec:
           resources:
             limits:
               memory: {{ if $service.memory }}{{ $service.memory }}{{ else }}"128Mi"{{ end }}
-              cpu: {{ if $service.cpu }}{{ $service.cpu }}{{ else }}"500m"{{ end }}
+              cpu: {{ if $service.cpu }}{{ $service.cpu }}{{ else }}"300m"{{ end }}
           {{- if $service.command }}
           command:
             {{- range $index, $cmd := $service.command }}

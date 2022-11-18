@@ -5,6 +5,7 @@ import { ds } from '../ds/redis'
 
 
 const userFeedStaledHandler = async (event: UserFeedStaledEvent, msg: JsMsg) => {
+    console.log('UserFeedStaled ... ');
     const userId = event.userId;
     const key = `userFeed:${userId}`;
     await ds.redis.del(key);

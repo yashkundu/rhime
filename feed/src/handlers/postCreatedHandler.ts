@@ -10,6 +10,7 @@ import { MongoServerError } from 'mongodb'
 
 
 const postCreatedHandler = async (event: PostCreatedEvent, msg: JsMsg) => {
+    console.log('Post created ... ')
     try {
         await ProfileFeed.insertOne({
             _id: {

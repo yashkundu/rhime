@@ -2,7 +2,6 @@ import {ObjectId, Long} from 'bson'
 import { ProfileFeed } from '../db/collections/profileFeedCollection'
 import { PAGE_SIZE } from '../config'
 import { UserGraphView } from '../services/userGraphView'
-import { Messiahs } from '../interfaces/messiahsInterface'
 
 
 const getUserPosts = async (userId: ObjectId, anchorId: string | undefined) => {
@@ -18,18 +17,18 @@ const getUserPosts = async (userId: ObjectId, anchorId: string | undefined) => {
 
 
 const getTimelinePosts = async (userId: ObjectId, anchorId: string | undefined) => {
-    
+    console.log('Getting timeline posts ... ')
     const matchObj: {[key: string]: any} = {}
     if(anchorId) matchObj['_id.postId'] = {$lt: new Long(anchorId)}
     let posts: string[] = []
 
     const call = UserGraphView.getMessiahs({userId: userId.toHexString()})
 
-    let messiahs: Messiahs;
 
     call.on('error', function(err: Error) {
         console.log('Error in getting messiahs :(');
         console.log(err);
+        throw err
     })
 
     call.on('status', function(status: any) {
@@ -40,8 +39,10 @@ const getTimelinePosts = async (userId: ObjectId, anchorId: string | undefined) 
         console.log('getMessiahs stream has ended');
     });
 
-    while(messiahs = call.read()){
-        const userIds = messiahs.userIds.map(bufId => new ObjectId(bufId))
+    for await (const messiahs of call){
+        const userIds = messiahs.userIds.map((bufId: Buffer) => new ObjectId(bufId))
+        console.log('Messiahs -> ')
+        console.log(JSON.stringify(userIds))
         
         const cursor = ProfileFeed.aggregate([
             {
@@ -67,6 +68,9 @@ const getTimelinePosts = async (userId: ObjectId, anchorId: string | undefined) 
     
     
     posts = getTopX(posts.concat(newPosts))
+    console.log('Timeline posts -> ')
+    console.log(posts)
+    
     return posts;  
     
           

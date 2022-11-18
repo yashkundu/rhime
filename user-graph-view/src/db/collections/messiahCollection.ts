@@ -8,7 +8,7 @@ export enum MessiahFields {
 }
 
 export interface messiah extends Document{
-    minionId: ObjectId;               // (minionId, messiahId) will be the indexed field
+    minionId: ObjectId;           // (minionId, messiahId) will be the indexed field
     messiahId: ObjectId
 }
 

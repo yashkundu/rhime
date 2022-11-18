@@ -44,6 +44,9 @@ services:
       nats_url: true
       mongo_url: true
       redis_url: true
+    extra_env:
+      - name: userGraphView_url
+        value: user-graph-view:80
 
   - serviceName: gateway
     replicaCount: 1
@@ -146,8 +149,8 @@ services:
   - serviceName: mongo
     image: mongo:6.0.3
     replicaCount: 1
-    memory: "1028Mi"
-    cpu: "1200m"
+    memory: "800Mi"
+    cpu: "800m"
     volumes:
       - name: mongo-storage
         claimName: mongo-pvc

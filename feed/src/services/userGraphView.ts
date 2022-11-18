@@ -18,8 +18,5 @@ const protoPkg = protoDescriptor.pkg
 
 // export const sexyService = new protoPkg.UserGraphView('127.0.0.1:9700', grpc.credentials.createInsecure());
 
-
-
-
-
+// @ts-ignore
 export const UserGraphView = new protoPkg.UserGraphView(process.env.userGraphView_url, grpc.credentials.createInsecure());

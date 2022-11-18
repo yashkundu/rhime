@@ -1,4 +1,4 @@
-$services = @("auth", "comment", "feed", "gateway", "like", "like-batch-updater", "like-count", "like-updater", "post", "recommendation", "spotify", "user", "user-graph", "user-graph-view", "client")
+$services = @("auth", "comment", "feed", "gateway", "like", "like-batch-updater", "like-count", "like-updater", "post", "recommendation", "spotify", "user", "user-graph", "user-graph-view")
 
 $loc = Split-Path -Parent $PSCommandPath
 

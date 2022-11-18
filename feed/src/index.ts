@@ -34,7 +34,7 @@ const initNATS = async () => {
 const start = async () => {
     try {
         const envVariables = ['APP_PORT', 'mongo_url', 
-        'nats_url', 'redis_url']
+        'nats_url', 'redis_url', 'userGraphView_url']
 
         for(const x of envVariables){
             if(!process.env[x]) throw new Error('Environment variables not declared')
@@ -65,6 +65,7 @@ const start = async () => {
         
     } catch (error) {
         console.log(error);
+        throw error;
     }
 }
 
