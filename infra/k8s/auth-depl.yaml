@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-label
+  template:
+    metadata:
+      labels:
+        app: auth-label
+    spec:
+      containers:
+        - name: auth-container
+          image: auth-image
+          env:
+            - name: APP_PORT
+              value: 80
+            - name: nats_url
+              value: nats:4222
+            - name: mongo_url
+              value: mongo:27017
+            - name: ACCESS_TOKEN_SECRET
+              value: secretKey
+            - name: SIGNED_COOKIE_SECRET
+              value: secretKey
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth
+spec:
+  selector:
+    app: auth-label
+  type: ClusterIP
+  ports:
+    - containerPort: 80

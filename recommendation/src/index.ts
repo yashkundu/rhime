@@ -18,7 +18,7 @@ import { batchedRecommends } from './processors/batchedRecommends';
 const start = async () => {
 
     const envVariables = ['mongo_url', 
-    'redis_url']
+    'redis_url', 'mongo_username', 'mongo_password']
 
     for(const x of envVariables){
         if(!process.env[x]) throw new Error('Environment variables not declared')
@@ -28,7 +28,7 @@ const start = async () => {
     await startStWorker()
     await startStQueue()
 
-    const mongo_url = 'mongodb://' + process.env.mongo_url + '/?directConnection=true'
+    const mongo_url = `mongodb+srv://${process.env.mongo_username}:${process.env.mongo_password}${process.env.mongo_url}`;
 
     await mongo.connect(mongo_url)
     console.log('Recommendation service connected to MongoDb ... ');

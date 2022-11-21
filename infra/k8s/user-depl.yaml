@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-label
+  template:
+    metadata:
+      labels:
+        app: user-label
+    spec:
+      containers:
+        - name: user-container
+          image: user-image
+          env:
+            - name: APP_PORT
+              value: 80
+            - name: nats_url
+              value: nats:4222
+            - name: mongo_url
+              value: mongo:27017
+            - name: AWS_ACCESS_KEY_ID
+              value: AKIAYTPZ46XVIGM36ZJR
+            - name: AWS_SECRET_ACCESS_KEY
+              value: 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
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user
+spec:
+  selector:
+    app: user-label
+  type: ClusterIP
+  ports:
+    - containerPort: 80

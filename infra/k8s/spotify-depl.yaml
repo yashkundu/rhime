@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spotify-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spotify-label
+  template:
+    metadata:
+      labels:
+        app: spotify-label
+    spec:
+      containers:
+        - name: spotify-container
+          image: spotify-image
+          env:
+            - name: APP_PORT
+              value: 80
+            - name: nats_url
+              value: nats:4222
+            - name: mongo_url
+              value: mongo:27017
+            - name: redis_url
+              value: redis:6379
+            - name: SPOTIFY_CLIENT_KEY
+              value: 5cc55c84a3014a4fb8322802d1a6c3ad
+            - name: SPOTIFY_CLIENT_SECRET
+              value: 122ccd2a34454c42814fd95d28119747
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spotify
+spec:
+  selector:
+    app: spotify-label
+  type: ClusterIP
+  ports:
+    - containerPort: 80

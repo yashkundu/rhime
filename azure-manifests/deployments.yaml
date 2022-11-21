@@ -1,0 +1,630 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth-label
+  template:
+    metadata:
+      labels:
+        app: auth-label
+    spec:
+      containers:
+        - name: auth-container
+          image: yashkundu/auth
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name : ACCESS_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: ACCESS_TOKEN_SECRET
+            - name : SIGNED_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: SIGNED_COOKIE_SECRET
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-label
+  template:
+    metadata:
+      labels:
+        app: client-label
+    spec:
+      containers:
+        - name: client-container
+          image: yashkundu/client
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "150m"
+          env:
+            - name: APP_PORT
+              value: "80"
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comment-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comment-label
+  template:
+    metadata:
+      labels:
+        app: comment-label
+    spec:
+      containers:
+        - name: comment-container
+          image: yashkundu/comment
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feed-label
+  template:
+    metadata:
+      labels:
+        app: feed-label
+    spec:
+      containers:
+        - name: feed-container
+          image: yashkundu/feed
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name: redis_url
+              value: "redis:6379"
+            - name : userGraphView_url
+              value: "user-graph-view:80"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-label
+  template:
+    metadata:
+      labels:
+        app: gateway-label
+    spec:
+      containers:
+        - name: gateway-container
+          image: yashkundu/gateway
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name : ACCESS_TOKEN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: ACCESS_TOKEN_SECRET
+            - name : SIGNED_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: auth-secret
+                  key: SIGNED_COOKIE_SECRET
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: like-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: like-label
+  template:
+    metadata:
+      labels:
+        app: like-label
+    spec:
+      containers:
+        - name: like-container
+          image: yashkundu/like
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name: redis_url
+              value: "redis:6379"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: like-batch-updater-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: like-batch-updater-label
+  template:
+    metadata:
+      labels:
+        app: like-batch-updater-label
+    spec:
+      containers:
+        - name: like-batch-updater-container
+          image: yashkundu/like-batch-updater
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: like-count-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: like-count-label
+  template:
+    metadata:
+      labels:
+        app: like-count-label
+    spec:
+      containers:
+        - name: like-count-container
+          image: yashkundu/like-count
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: like-updater-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: like-updater-label
+  template:
+    metadata:
+      labels:
+        app: like-updater-label
+    spec:
+      containers:
+        - name: like-updater-container
+          image: yashkundu/like-updater
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name: redis_url
+              value: "redis:6379"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-label
+  template:
+    metadata:
+      labels:
+        app: post-label
+    spec:
+      containers:
+        - name: post-container
+          image: yashkundu/post
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendation-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recommendation-label
+  template:
+    metadata:
+      labels:
+        app: recommendation-label
+    spec:
+      containers:
+        - name: recommendation-container
+          image: yashkundu/recommendation
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name: redis_url
+              value: "redis:6379"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spotify-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spotify-label
+  template:
+    metadata:
+      labels:
+        app: spotify-label
+    spec:
+      containers:
+        - name: spotify-container
+          image: yashkundu/spotify
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name: redis_url
+              value: "redis:6379"
+            - name : SPOTIFY_CLIENT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: spotify-secret
+                  key: SPOTIFY_CLIENT_KEY
+            - name : SPOTIFY_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: spotify-secret
+                  key: SPOTIFY_CLIENT_SECRET
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-label
+  template:
+    metadata:
+      labels:
+        app: user-label
+    spec:
+      containers:
+        - name: user-container
+          image: yashkundu/user
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name : AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: AWS_ACCESS_KEY_ID
+            - name : AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: aws-secret
+                  key: AWS_SECRET_ACCESS_KEY
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-graph-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-graph-label
+  template:
+    metadata:
+      labels:
+        app: user-graph-label
+    spec:
+      containers:
+        - name: user-graph-container
+          image: yashkundu/user-graph
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: nats_url
+              value: "nats:4222"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-graph-view-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-graph-view-label
+  template:
+    metadata:
+      labels:
+        app: user-graph-view-label
+    spec:
+      containers:
+        - name: user-graph-view-container
+          image: yashkundu/user-graph-view
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "135m"
+          env:
+            - name: APP_PORT
+              value: "80"
+            - name: mongo_url
+              value: "@cluster0.hoxguzs.mongodb.net/?retryWrites=true&w=majority"
+            - name : mongo_username
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: username
+            - name : mongo_password
+              valueFrom:
+                secretKeyRef:
+                  name : mongo-secret
+                  key: password

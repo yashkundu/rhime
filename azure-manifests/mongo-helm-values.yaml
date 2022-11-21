@@ -1,0 +1,20 @@
+
+auth:
+  enabled: false
+
+architecture: replicaset
+replicaSetName: rep0
+replicaCount: 1
+
+hidden:
+  replicaCount: 0
+
+service:
+  nameOverride: mongo
+#   type: ClusterIP
+#   portName: mongodb
+#   ports:
+#     mongodb: 27017
+
+# helm repo add bitnami https://charts.bitnami.com/bitnami
+# helm install my-mongodb bitnami/mongodb --version 13.4.4

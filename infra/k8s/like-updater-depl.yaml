@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: like-updater-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: like-updater-label
+  template:
+    metadata:
+      labels:
+        app: like-updater-label
+    spec:
+      containers:
+        - name: like-updater-container
+          image: like-updater-image
+          env:
+            - name: nats_url
+              value: nats:4222
+            - name: mongo_url
+              value: mongo:27017
+            - name: redis_url
+              value: redis:6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: like-updater
+spec:
+  selector:
+    app: like-updater-label
+  type: ClusterIP
+  ports:
+    - containerPort: 80

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redis-label
+  template:
+    metadata:
+      labels:
+        app: redis-label
+    spec:
+      # volumes:
+      #   - name: inmemory-storage
+      #     persistentVolumeClaim:
+      #       claimName: inmemory-pvc
+      containers:
+        - name: redis-container
+          image: redis:7.0.5-alpine3.16
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "170m"
+          command:
+            - /usr/local/bin/docker-entrypoint.sh
+            - redis-server
+            - --save 60 1
+            - --loglevel warning
+          # volumeMounts:
+          #   - mountPath: /data
+          #     name: inmemory-storage
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+spec:
+  type: ClusterIP
+  selector:
+    app: redis-label
+  ports:
+  - port: 6379
+    targetPort: 6379

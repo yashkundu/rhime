@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: like-batch-updater-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: like-batch-updater-label
+  template:
+    metadata:
+      labels:
+        app: like-batch-updater-label
+    spec:
+      containers:
+        - name: like-batch-updater-container
+          image: like-batch-updater-image
+          env:
+            - name: nats_url
+              value: nats:4222
+            - name: mongo_url
+              value: mongo:27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: like-batch-updater
+spec:
+  selector:
+    app: like-batch-updater-label
+  type: ClusterIP
+  ports:
+    - containerPort: 80

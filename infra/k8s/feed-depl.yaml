@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feed-label
+  template:
+    metadata:
+      labels:
+        app: feed-label
+    spec:
+      containers:
+        - name: feed-container
+          image: feed-image
+          env:
+            - name: APP_PORT
+              value: 80
+            - name: nats_url
+              value: nats:4222
+            - name: mongo_url
+              value: mongo:27017
+            - name: redis_url
+              value: redis:6379
+            - name: userGraphView_url
+              value: user-graph-view:80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: feed
+spec:
+  selector:
+    app: feed-label
+  type: ClusterIP
+  ports:
+    - containerPort: 80

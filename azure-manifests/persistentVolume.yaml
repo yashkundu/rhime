@@ -1,0 +1,98 @@
+
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: mongo-pv
+# spec:
+#   capacity:
+#     storage: 3Gi
+#   accessModes:
+#     - ReadWriteMany
+#   persistentVolumeReclaimPolicy: Retain
+#   storageClassName: azurefile-csi
+#   csi:
+#     driver: file.csi.azure.com
+#     readOnly: false
+#     volumeHandle: unique-volumeid  # make sure this volumeid is unique in the cluster
+#     volumeAttributes:
+#       resourceGroup: RhimeGroup
+#       shareName: mongo-share
+#     nodeStageSecretRef:
+#       name: azure-secret
+#       namespace: default
+#   mountOptions:
+#     - dir_mode=0777
+#     - file_mode=0777
+#     - uid=0
+#     - gid=0
+#     - mfsymlinks
+#     - cache=strict
+#     - nosharesock
+#     - nobrl
+
+
+# ---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nats-pv
+spec:
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: azurefile-csi
+  csi:
+    driver: file.csi.azure.com
+    readOnly: false
+    volumeHandle: unique-volumeid  # make sure this volumeid is unique in the cluster
+    volumeAttributes:
+      resourceGroup: RhimeGroup
+      shareName: nats-share
+    nodeStageSecretRef:
+      name: azure-secret
+      namespace: default
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=0
+    - gid=0
+    - mfsymlinks
+    - cache=strict
+    - nosharesock
+    - nobrl
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: inmemory-pv
+spec:
+  capacity:
+    storage: 3Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: azurefile-csi
+  csi:
+    driver: file.csi.azure.com
+    readOnly: false
+    volumeHandle: unique-volumeid  # make sure this volumeid is unique in the cluster
+    volumeAttributes:
+      resourceGroup: RhimeGroup
+      shareName: inmemory-share
+    nodeStageSecretRef:
+      name: another-secret
+      namespace: default
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=0
+    - gid=0
+    - mfsymlinks
+    - cache=strict
+    - nosharesock
+    - nobrl

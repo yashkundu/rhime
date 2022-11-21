@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nats-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nats-label
+  template:
+    metadata:
+      labels:
+        app: nats-label
+    spec:
+      volumes:
+        - name: nats-storage
+          persistentVolumeClaim:
+            claimName: nats-pvc
+      containers:
+        - name: nats-container
+          image: nats:2.9.6-alpine3.16
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "300Mi"
+              cpu: "170m"
+          command:
+            - /usr/local/bin/docker-entrypoint.sh
+            - nats-server
+            - -js
+          volumeMounts:
+            - mountPath: /tmp/nats/jetstream
+              name: nats-storage
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nats
+spec:
+  type: ClusterIP
+  selector:
+    app: nats-label
+  ports:
+  - port: 4222
+    targetPort: 4222

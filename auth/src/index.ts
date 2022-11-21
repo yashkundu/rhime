@@ -28,7 +28,7 @@ const start = async () => {
     try {
 
         const envVariables = ['ACCESS_TOKEN_SECRET', 'SIGNED_COOKIE_SECRET',
-         'APP_PORT', 'nats_url', 'mongo_url']
+         'APP_PORT', 'nats_url', 'mongo_url', 'mongo_username', 'mongo_password']
 
         for(const x of envVariables){
             if(!process.env[x]) {
@@ -37,7 +37,16 @@ const start = async () => {
             }
         }
 
-        const mongo_url = 'mongodb://' + process.env.mongo_url + '/?directConnection=true'
+        const mongo_url = `mongodb+srv://${process.env.mongo_username}:${process.env.mongo_password}${process.env.mongo_url}`;
+
+        console.log('envs -> ');
+        console.log(process.env.mongo_username)
+        console.log(process.env.mongo_password)
+        console.log(process.env.mongo_url)
+
+        console.log('url -> ');
+        console.log(mongo_url);
+        
 
         await mongo.connect(mongo_url)
         console.log('Auth service connected to MongoDb ... ');
