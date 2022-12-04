@@ -78,8 +78,7 @@ A [Cron Job](https://en.wikipedia.org/wiki/Cron) is also used in a service to pe
 - [Spotify Service]() : *This service is responsible for connecting user's spotify account, getting user's top tracks, top items and top artists, and also fetches the recommended friends for a user and their similarity stats.*
 - [Recommendation Service]() : *When the user initially connects spotify account, this service is responsible for fetching initial music data and creating initial recommendations for user. This service also periodically fetches the user's data to update their music taste and updates their recommended friends.*
 - [Gateway Service]() : *This is a reverse-proxy which acts as an api gateway and routes the traffic to their respective microservices. The gateway also does the authentication and discards unauthenticated requests and proxies the authenticated ones.*
-<br>
-<br>
+
 ## Shared modules
 - [Discovery module](https://github.com/yashkundu/discovery-rhime) : Implements a service registry (like a local dns system) in which services will register and service names are resolved to their ip. Etcd is used to implement service registry, which also tracks the health of the service and provide information to the gateway server. Docker and kubernetes implements automatic dns out of the box. 
 - [Events module](https://github.com/yashkundu/events-rhime) : Implements the interface of events through which different microservices communicate with each other.
