@@ -16,9 +16,10 @@ Stateless Authentication is used to make it scalable.
 ---
 
 > Although noSQL database is used but a proper Schema is maintained.<br>
+> 
+<br>
 
-
-### UserCollection <br>
+#### UserCollection <br>
 <br>
 
 | Attribute        | Type        | Description |   
@@ -40,19 +41,19 @@ Registers a new user, and sends a [UserCreatedEvent]() .
 \
 Signs in a user, by sending a JWT as a cookie to the client.
 
-```http
+```code
   POST /api/auth/signin
 ```
 \
 Logs out the user by removing the cookie.
 
-```http
+```code
   POST /api/auth/signin
 ```
 \
 Gets the current user
 
-```http
+```code
   POST /api/auth/currentUser
 ```
 <br>
@@ -61,7 +62,7 @@ Gets the current user
 ---
 <br>
 
-### UserCreatedEvent
+#### UserCreatedEvent
 <br>
 
 It is fired whenever a new user signs up .
