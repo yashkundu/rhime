@@ -13,7 +13,6 @@ Stateless Authentication is used to make it scalable.
 <br>
 <br>
 ## Database
----
 
 > Although noSQL database is used but a proper Schema is maintained.<br>
 > 
