@@ -62,7 +62,7 @@ A [Cron Job](https://en.wikipedia.org/wiki/Cron) is also used in a service to pe
 
 
 ## Microservices overview
-
+Visit any service to know about the detailed architectural design of that service.
 - [Auth Service]() : *This service handles the authentication for the application by issuing JWT(JSON Web Tokens) and handlers the basic SigIn, SignUp, SignOut functionalities.*
 - [User Service]() : *This service handles information about the user's profile like getting or updating profile info, updating profile image.*
 - [Post Service]() : *This service handles creation and fetching of posts.*
