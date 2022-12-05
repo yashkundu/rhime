@@ -30,12 +30,12 @@ Stateless Authentication is used to make it scalable.
 | password | string     |   password of user |
 |isAuth | boolean   | If spotify has been authorized or not  |
 <br>
+
 ## API Reference
----
 \
 Registers a new user, and sends a [UserCreatedEvent]() .
 
-```http
+```code
   POST /api/auth/signup
 ```
 \
@@ -59,8 +59,7 @@ Gets the current user
 <br>
 
 ## Events
----
-<br>
+
 
 #### UserCreatedEvent
 <br>
