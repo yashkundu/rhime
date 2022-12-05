@@ -31,7 +31,7 @@ Stateless Authentication is used to make it scalable.
 <br>
 
 ## API Reference
-\
+
 Registers a new user, and sends a [UserCreatedEvent]() .
 
 ```code
