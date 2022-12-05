@@ -70,5 +70,6 @@ It is fired whenever a new user signs up .
 | email      | string | email id of user |
 | userName      | string      |  unique userName of user |
 <br>
+
 ## Architecture Diagram
 ![image](https://user-images.githubusercontent.com/58662119/205548768-b8e4854d-d0f5-4b7f-82a7-2629a0f199e3.png)
