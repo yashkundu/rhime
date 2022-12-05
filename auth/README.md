@@ -61,7 +61,7 @@ Gets the current user
 
 
 #### UserCreatedEvent
-<br>
+
 
 It is fired whenever a new user signs up .
 | Attribute        | Type        | Description |   
