@@ -1,82 +1,85 @@
-# Comment Service
+# Like Service
 
-The main function of the Comment service is to create and fetch comments of a post and the count of comments.
+The main function of the Like service is to toggle likes on a post or comment and to fetch if a particular user has like the post or not.
 
 <br>
 
-## Database (comment)
+## Database (like)
 
 > Although noSQL database is used but a proper Schema is maintained.<br>
-> 
 
 
-#### ValidPostCollection <br>
 <br>
+
+### ValidItemCollection <br>
 
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | postId of a valid Post (**Primary Key**) |
+| `_id`      | `ObjectId` | id of a valid item (a post or comment) (**Primary Key**) |
 <br>
 
-#### CommentCollection <br>
-<br>
+### ItemLikeCollection <br>
 
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | commentId of the comment (**Primary Key**) |
-| `postId`      | `ObjectId` | postId of the post on which comment is made |
-| `userId`      | `ObjectId` | userId of the user who made the comment  |
-| `text`      | `string` | the content of the comment |
+| `_id`      | `{itemId: ObjectId, userId: ObjectId}` | this exists if a user with id userId has liked an item (post or comment) with id itemId |
+
 <br>
 
 ## API Reference
 
-Create a new comment on post with id postId and publishes a [CommentCreatedEvent]().
+Toggles the like of current user on item with id itemId.
 
 ```code
-  POST /api/comment/:postId
+  POST /api/like/:itemId
 ```
 \
-Get the comments on a post with id postId
+Get if the current user has liked the item with id itemId or not.
 
 ```code
-  POST /api/comment/:postId?anchorId=
+  Get /api/like/:postId?anchorId=
 ```
-| Query Param | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `anchorId` | `string` | The returned commentsId should be greater than anchorId. (pagination) |
 
-\
-Returns the count of comments on a post with id postId.
-
-```code
-  GET /api/comment/:postId/count
-```
-\
-Gets the current user
-
-```code
-  POST /api/auth/currentUser
-```
 <br>
 
 ## Events
 
 
-#### CommentCreatedEvent
+### LikeToggledEvent
 
 
 It is fired whenever a new comment is created .
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `commentId`      | `string` | _id field of a valid [CommentCollection]() document |
+| `itemId`      | `string` | id of the item  |
+| `userId`      | `string` | id of the user  |
+| `type`      | `number` | 1 - the user has like, -1 - the user has unliked  |
+| `eventId`      | `string` | a guid which prevents multiple execution of event handlers  |
 
-## Handlers
+<br>
+
+## EventHandlers
 > Handlers consumes events from NATS stream and processes them.
-### [PostCreated Handler](/comment/src/handlers/postCreatedHandler.ts)
-It captures the [PostCreatedEvent]() and processes it and add the postId to the _id field of the [ValidPostCollection]() .
+### [PostCreated EventHandler](/comment/src/handlers/postCreatedHandler.ts)
+It captures the [PostCreatedEvent]() and processes it and add the postId to the _id field of the [ValidItemCollection]() .
+
+<br>
+
+### [CommentCreated EventHandler](/comment/src/handlers/postCreatedHandler.ts)
+It captures the [CommentCreatedEvent]() and processes it and add the commentId to the _id field of the [ValidItemCollection]() .
+
+<br>
+
+## Architecture
+
+### Updating likes asynchronously
+[ItemLikeCollection]() is where the likes are stored persistently, but likes occur at a very high volume in social media site, and should be efficiencty handled otherwise they will become the bottleneck for the server. If we synchronously update the [ItemLikeCollection]() whenever a like or unlike occurs, it would be highly inefficient, so we can **asynchronously** update the likes in the persistent storage. This can be done by publishing [LikeToggledEvent]() to the nats stream and it will be asynchronously handled by  [likeUpdaterService]() & [LikeBatchUpdaterService]().
+
+### Problem with the above approach
+If we update likes asynchronously, then it can take some time for them to be updated in the [ItemLikeCollection](). So, sometimes the user won't be able to see the like on the item which it recently liked. To counter this problem we can store the user's likes in the last 5 minutes in an inmemory cache in Redis.\
+So whenever a user sends a request to check if it has liked an item, first the inmemory cache will be checked and then the persistent storage.
 
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205670514-85598419-4e75-4254-b8b0-f7cd6d7c3f62.png)
+![like](https://user-images.githubusercontent.com/58662119/205959416-c52c09f7-8169-4bd7-b0c3-661d706bacac.png)
