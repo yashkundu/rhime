@@ -19,6 +19,7 @@ The main function of the Like service is to toggle likes on a post or comment an
 <br>
 
 ### ItemLikeCollection <br>
+It provides the persistent storage for likes in the application.
 
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
@@ -48,7 +49,7 @@ Get if the current user has liked the item with id itemId or not.
 ### LikeToggledEvent
 
 
-It is fired whenever a new comment is created .
+It is published whenever a user toggle a like on an item so that likes can be update asynchronously.
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
 | `itemId`      | `string` | id of the item  |
@@ -82,4 +83,4 @@ So whenever a user sends a request to check if it has liked an item, first the i
 <br>
 
 ## Architecture Diagram
-![like](https://user-images.githubusercontent.com/58662119/205959416-c52c09f7-8169-4bd7-b0c3-661d706bacac.png)
+![like](https://user-images.githubusercontent.com/58662119/205961616-fb629156-4fb1-4d47-b3cb-99af8589844d.png)
