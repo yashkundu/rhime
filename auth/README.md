@@ -12,7 +12,7 @@ Stateless Authentication is used to make it scalable.
 [JWT (JSON Web Token)]() are sent as a cookie to the clients so that their further requests could be authorized.
 <br>
 <br>
-## Database
+## Database (authUser)
 
 > Although noSQL database is used but a proper Schema is maintained.<br>
 > 
@@ -49,12 +49,6 @@ Logs out the user by removing the cookie.
 ```code
   POST /api/auth/signin
 ```
-\
-Gets the current user
-
-```code
-  POST /api/auth/currentUser
-```
 <br>
 
 ## Events
@@ -71,5 +65,12 @@ It is fired whenever a new user signs up .
 | userName      | string      |  unique userName of user |
 <br>
 
+## Handlers
+> Handlers consumes events from NATS stream and processes them.
+### [UserAuthorized Handler](https://github.com/yashkundu/rhime/blob/master/auth/src/handlers/userAuthorizedHandler.ts)
+It captures the [UserAuthorized Event]() and processes it and makes isAuth field of [User Collection]() true.
+
+<br>
+
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205548768-b8e4854d-d0f5-4b7f-82a7-2629a0f199e3.png)
+![image](https://user-images.githubusercontent.com/58662119/205563505-ab4a3db7-df3c-41e0-8973-a9b6d05e3889.png)
