@@ -17,7 +17,7 @@ const updateDB = async () => {
         if(counter===MONGO_BATCH_SIZE) {
             await builder.execute()
             counter = 0;
-            builder = mongo.db.collection('ReactionCount').initializeUnorderedBulkOp();
+            builder = mongo.db.collection('RTLikeCount').initializeUnorderedBulkOp();
         }
     }
     if(counter>0) await builder.execute();

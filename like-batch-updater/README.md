@@ -1,82 +1,56 @@
-# Comment Service
+# LikeBatchUpdater Service
 
-The main function of the Comment service is to create and fetch comments of a post and the count of comments.
+The main function of the LikeBatchUpdater service is to consume [LikeToggledEvent]() and update [RTLikeCountCollection]() in batches.
 
 <br>
 
-## Database (comment)
+## Database (like)
 
 > Although noSQL database is used but a proper Schema is maintained.<br>
-> 
 
 
-#### ValidPostCollection <br>
 <br>
 
+
+### [RTLikeCountColletion]() <br>
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | postId of a valid Post (**Primary Key**) |
+| `_id`      | `ObjectId` | id of an item (a post or comment) (**Primary Key**) |
+| `count`      | `Int32` | no. of likes on the item (a post or comment) |
+
 <br>
 
-#### CommentCollection <br>
-<br>
-
+### [DailyLikeCountCollection]() <br>
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | commentId of the comment (**Primary Key**) |
-| `postId`      | `ObjectId` | postId of the post on which comment is made |
-| `userId`      | `ObjectId` | userId of the user who made the comment  |
-| `text`      | `string` | the content of the comment |
+| `_id`      | `ObjectId` | id of an item (a post or comment) (**Primary Key**) |
+| `count`      | `Int32` | no. of likes on the item (a post or comment) |
+
 <br>
 
-## API Reference
-
-Create a new comment on post with id postId and publishes a [CommentCreatedEvent]().
-
-```code
-  POST /api/comment/:postId
-```
-\
-Get the comments on a post with id postId
-
-```code
-  POST /api/comment/:postId?anchorId=
-```
-| Query Param | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `anchorId` | `string` | The returned commentsId should be greater than anchorId. (pagination) |
-
-\
-Returns the count of comments on a post with id postId.
-
-```code
-  GET /api/comment/:postId/count
-```
-\
-Gets the current user
-
-```code
-  POST /api/auth/currentUser
-```
-<br>
-
-## Events
-
-
-#### CommentCreatedEvent
-
-
-It is fired whenever a new comment is created .
-| Attribute        | Type        | Description |   
-| :------------- |:------------- | :----------  |
-| `commentId`      | `string` | _id field of a valid [CommentCollection]() document |
-
-## Handlers
+## EventHandlers
 > Handlers consumes events from NATS stream and processes them.
-### [PostCreated Handler](/comment/src/handlers/postCreatedHandler.ts)
-It captures the [PostCreatedEvent]() and processes it and add the postId to the _id field of the [ValidPostCollection]() .
+### [LikeToggled EventHandler](/comment/src/handlers/postCreatedHandler.ts)
+It captures the [LikeToggledEvent]() and processes it and updates the[RTLikeCountCollection]() in batches (update per 5min.) to update the likeCount of items.
+
+<br>
+
+
+## Architecture
+
+### [RTLikeCountCollection]() does not store accurate likeCount
+Since NATS does not guarantee exactly once messaging, so some events may be consumed more than once, so RTLikeCount won't always have a precise like count.
+
+### [DailyLikeCountCollection]() to store accurate likeCount
+A daily cron job will update the [DailyLikeCountCollection]() from [ItemLikeCollection]() and clear the user's RTLikeCount in a single transaction.\
+Then the total likes on an item can be more accurately calculated by summing the values of RTLikeCount and DailyLikeCount.
+
+
+
+
+
 
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205670514-85598419-4e75-4254-b8b0-f7cd6d7c3f62.png)
+![likeBatchUpdater](https://user-images.githubusercontent.com/58662119/206021166-e7bf81e6-fb0a-4817-aa83-492895c5357a.png)

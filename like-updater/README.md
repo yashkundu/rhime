@@ -1,82 +1,46 @@
-# Comment Service
+# LikeUpdater Service
 
-The main function of the Comment service is to create and fetch comments of a post and the count of comments.
+The main function of the LikeUpdater service is to consume [LikeToggledEvent]() and update [ItemLikeCollection]().
 
 <br>
 
-## Database (comment)
+## Database (like)
 
 > Although noSQL database is used but a proper Schema is maintained.<br>
-> 
 
 
-#### ValidPostCollection <br>
 <br>
 
-| Attribute        | Type        | Description |   
-| :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | postId of a valid Post (**Primary Key**) |
+### [ValidItemCollectionn]() <br>
+Shares this collection with [LikeService](). Although it violates the microservices design pattern, but it works because one service can only read and the other can only write.
+
+
+### [ItemLikeCollection]() <br>
+Shares this collection with [LikeService](). Although it violates the microservices design pattern, but it works because one service can only read and the other can only write.
+
 <br>
 
-#### CommentCollection <br>
-<br>
-
-| Attribute        | Type        | Description |   
-| :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | commentId of the comment (**Primary Key**) |
-| `postId`      | `ObjectId` | postId of the post on which comment is made |
-| `userId`      | `ObjectId` | userId of the user who made the comment  |
-| `text`      | `string` | the content of the comment |
-<br>
-
-## API Reference
-
-Create a new comment on post with id postId and publishes a [CommentCreatedEvent]().
-
-```code
-  POST /api/comment/:postId
-```
-\
-Get the comments on a post with id postId
-
-```code
-  POST /api/comment/:postId?anchorId=
-```
-| Query Param | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `anchorId` | `string` | The returned commentsId should be greater than anchorId. (pagination) |
-
-\
-Returns the count of comments on a post with id postId.
-
-```code
-  GET /api/comment/:postId/count
-```
-\
-Gets the current user
-
-```code
-  POST /api/auth/currentUser
-```
-<br>
-
-## Events
-
-
-#### CommentCreatedEvent
-
-
-It is fired whenever a new comment is created .
-| Attribute        | Type        | Description |   
-| :------------- |:------------- | :----------  |
-| `commentId`      | `string` | _id field of a valid [CommentCollection]() document |
-
-## Handlers
+## EventHandlers
 > Handlers consumes events from NATS stream and processes them.
-### [PostCreated Handler](/comment/src/handlers/postCreatedHandler.ts)
-It captures the [PostCreatedEvent]() and processes it and add the postId to the _id field of the [ValidPostCollection]() .
+### [LikeToggled EventHandler](/comment/src/handlers/postCreatedHandler.ts)
+It captures the [LikeToggledEvent]() and processes it and updates the[ItemLikeCollection]() to persistently store the likes.
+
+<br>
+
+
+## Architecture
+
+### Handling event exactly once
+Most of the persisten message buses or brokers only provide atleast once guarantee, it means there is a possibility that the consumer can consume the same message more than once. NATS Jetstream also provides atleast once guarantee.
+It's better to have idempotent events (i.e can be consumed more than once without any violations).\
+But [LikeToggledEvent]() is not idempotent. So
+we can use an inmemory store to store the guid of [LikeToggledEvent]() for 5 minutes so that it is not handled the second time.
+
+### Using pull consumer instead of push
+Since like flows at such a high volume and frequency, push consumers won't keep up with the pace and the events won't be acknowledged in time, and will be retried again and again and it will cause a complete failure.\
+On the other hand pull consumers can consumer events on their own pace, so push consumers are used.
 
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205670514-85598419-4e75-4254-b8b0-f7cd6d7c3f62.png)
+![likeUpdater](https://user-images.githubusercontent.com/58662119/206028821-7068e839-aebc-46df-a837-c2682f50a638.png)
