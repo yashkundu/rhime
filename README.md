@@ -171,4 +171,4 @@ Visit any service to know about the detailed architectural design of that servic
 
 ## [Client](/client)
 
-Build  using NextJs, and utilizes both server-side and client-size rendering.
+Build  using NextJs, and utilizes both server-side and client-side rendering.
