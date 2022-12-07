@@ -9,7 +9,7 @@ There are two ways of implementing authentication :
 
 Stateless Authentication is used to make it scalable.
 
-[JWT (JSON Web Token)]() are sent as a cookie to the clients so that their further requests could be authorized.
+[JWT (JSON Web Token)](https://en.wikipedia.org/wiki/JSON_Web_Token) are sent as a cookie to the clients so that their further requests could be authorized.
 <br>
 <br>
 ## Database (authUser)
@@ -32,7 +32,7 @@ Stateless Authentication is used to make it scalable.
 
 ## API Reference
 
-Registers a new user, and sends a [UserCreatedEvent]() .
+Registers a new user, and sends a [UserCreatedEvent](/auth#usercreatedevent) .
 
 ```code
   POST /api/auth/signup
