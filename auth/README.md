@@ -32,7 +32,7 @@ Stateless Authentication is used to make it scalable.
 
 ## API Reference
 
-Registers a new user, and sends a [UserCreatedEvent](/auth#usercreatedevent) .
+Registers a new user, and sends a [UserCreatedEvent](#usercreatedevent) .
 
 ```code
   POST /api/auth/signup
