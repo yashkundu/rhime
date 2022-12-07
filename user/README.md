@@ -61,4 +61,4 @@ It consumes the [UserCreatedEvent](../auth/README.md#usercreatedevent) and proce
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205693892-6bd5a01d-f933-4014-968f-354fa215bf46.png)
+![user](https://user-images.githubusercontent.com/58662119/206245890-460d213e-616a-4c7a-bbb7-eef831114275.png)

@@ -78,4 +78,4 @@ Firstly, posts from user's timeline cache are fetched and are shown in the timel
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205841554-3c6e58ca-f04c-478c-83ca-9775037cf9d5.png)
+![feed](https://user-images.githubusercontent.com/58662119/206220660-b7e1a246-2bf2-496c-82c5-d69e2a49302f.png)

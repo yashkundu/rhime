@@ -72,4 +72,4 @@ It is published whenever a new post is created .
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205669246-a61d88b9-5397-4e25-bca6-f367f5dfd81f.png)
+![post](https://user-images.githubusercontent.com/58662119/206240514-e2ca34f4-7c4a-464c-aad9-586ca0d3989d.png)
