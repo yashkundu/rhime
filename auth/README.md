@@ -67,8 +67,8 @@ It is fired whenever a new user signs up .
 
 ## Handlers
 > Handlers consumes events from NATS stream and processes them.
-### [UserAuthorized Handler](https://github.com/yashkundu/rhime/blob/master/auth/src/handlers/userAuthorizedHandler.ts)
-It captures the [UserAuthorized Event]() and processes it and makes isAuth field of [User Collection]() true.
+### [UserAuthorized Handler](/auth/src/handlers/userAuthorizedHandler.ts)
+It captures the [UserAuthorized Event](/spotify#userauthorizedevent) and processes it and makes isAuth field of [User Collection]() true.
 
 <br>
 
