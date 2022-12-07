@@ -73,4 +73,4 @@ It captures the [UserAuthorized Event]() and processes it and makes isAuth field
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205563505-ab4a3db7-df3c-41e0-8973-a9b6d05e3889.png)
+![auth](https://user-images.githubusercontent.com/58662119/206139474-a67dbfa8-8806-4e60-b0df-4fc401e7b1cc.png)

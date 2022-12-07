@@ -1,82 +1,111 @@
-# Comment Service
+# Spotify Service
 
-The main function of the Comment service is to create and fetch comments of a post and the count of comments.
+The main function of the Spotify service is to authorize user's spotify account, provide top artists, tracks and genres of a particular user and provide friends recommendation for the user.
 
 <br>
 
-## Database (comment)
+## Database (spotify)
 
 > Although noSQL database is used but a proper Schema is maintained.<br>
 > 
 
 
-#### ValidPostCollection <br>
+### TokenCollection <br>
 <br>
 
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | postId of a valid Post (**Primary Key**) |
+| `_id`      | `ObjectId` | userId of a user (**Primary Key**) |
+| `access_token`      | `ObjectId` | spotify access_token |
+| `refresh_token`      | `ObjectId` | spotify refresh_token |
+| `expiration`      | `Date` | time at which access_token will expire |
 <br>
 
-#### CommentCollection <br>
-<br>
+### ItemCollection <br>
 
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | commentId of the comment (**Primary Key**) |
-| `postId`      | `ObjectId` | postId of the post on which comment is made |
-| `userId`      | `ObjectId` | userId of the user who made the comment  |
-| `text`      | `string` | the content of the comment |
+| `_id`      | `{userId: ObjectId, itemId: string}` | itemId is the id of an item (track, artist or genre) (**Primary Key**) |
+| `itemName`      | `string` | name of the item (track, artist or genre) |
+| `wt`      | `Int32` | Weightage of the item in caclculating user recommends  |
+| `itemType`      | `string` | 0 - track, 1 - artist, 2 - genre |
+
+<br>
+
+### RecommendCollection
+
+| Attribute        | Type        | Description |   
+| :------------- |:------------- | :----------  |
+| `_id`      | `{userId1: ObjectId, userId2: ObjectId}` | userId2 user appears in the friends recommendation of userId2 user(**Primary Key**) |
+| `isValid`      | `boolean` | is the recommendation valid or not |
+| `similarity`      | `Double` | Similarity score between the users (0-1) |
 <br>
 
 ## API Reference
 
-Create a new comment on post with id postId and publishes a [CommentCreatedEvent]().
+This routes directs to the spotify authorization page.
 
 ```code
-  POST /api/comment/:postId
+  GET /api/spotify/authorize
 ```
 \
-Get the comments on a post with id postId
+Spotify redirects to this URL route after successfull authorization.
 
 ```code
-  POST /api/comment/:postId?anchorId=
-```
-| Query Param | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `anchorId` | `string` | The returned commentsId should be greater than anchorId. (pagination) |
-
-\
-Returns the count of comments on a post with id postId.
-
-```code
-  GET /api/comment/:postId/count
+  GET /api/spotify/callback
 ```
 \
-Gets the current user
+Returns the accessToken which is used internally by the client.
 
 ```code
-  POST /api/auth/currentUser
+  GET /api/spotify/getToken
+```
+\
+Gets the top artists for the user with id userId
+
+```code
+  GET /api/spotify/getTopArtists/:userId
+```
+
+\
+Gets the top traks for the user with id userId
+
+```code
+  GET /api/spotify/getTopTracks/:userId
+```
+
+\
+Gets the top items (artists, tracks and genres) for the user with id userId
+
+```code
+  GET /api/spotify/getTopItems/:userId
+```
+
+\
+Gets the friends recommendation for the current user
+
+```code
+  GET /api/spotify/getUserRecommends
+```
+
+\
+Removes the alreaded viewed friend recommendation from recommendations list
+
+```code
+  GET /api/spotify/discardRecommend/:userId
 ```
 <br>
 
 ## Events
 
+### UserAuthorizedEvent
 
-#### CommentCreatedEvent
 
-
-It is fired whenever a new comment is created .
+It is published whenever a user authorize their spotify to connect with the application .
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `commentId`      | `string` | _id field of a valid [CommentCollection]() document |
+| `userId`      | `string` | userId of the authorized user |
 
-## Handlers
-> Handlers consumes events from NATS stream and processes them.
-### [PostCreated Handler](/comment/src/handlers/postCreatedHandler.ts)
-It captures the [PostCreatedEvent]() and processes it and add the postId to the _id field of the [ValidPostCollection]() .
-
-<br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205670514-85598419-4e75-4254-b8b0-f7cd6d7c3f62.png)
+![spotify](https://user-images.githubusercontent.com/58662119/206095489-400a740e-4fbf-4d4f-b6c7-c884e439cfef.png)

@@ -79,4 +79,4 @@ It captures the [PostCreatedEvent]() and processes it and add the postId to the 
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205670514-85598419-4e75-4254-b8b0-f7cd6d7c3f62.png)
+![comment](https://user-images.githubusercontent.com/58662119/206143626-ccd59e53-0e74-42e5-aeb0-3a0c7d2ee765.png)

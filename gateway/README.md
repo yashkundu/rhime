@@ -1,82 +1,24 @@
-# Comment Service
+# Gateway Service
 
-The main function of the Comment service is to create and fetch comments of a post and the count of comments.
+This acts as an [API Gateway](https://www.ibm.com/cloud/blog/api-gateway) for our microservices.\
+The two main function of this is : 
+- It authenticates all the incoming requests in which authentication is required as mentioned in [config.ts]() file.
+- It proxies all the requests to their respective microservices according to the endpoints provided in [config.ts]() file.
 
 <br>
 
-## Database (comment)
+## Service Discovery
 
-> Although noSQL database is used but a proper Schema is maintained.<br>
-> 
-
-
-#### ValidPostCollection <br>
-<br>
-
-| Attribute        | Type        | Description |   
-| :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | postId of a valid Post (**Primary Key**) |
-<br>
-
-#### CommentCollection <br>
-<br>
-
-| Attribute        | Type        | Description |   
-| :------------- |:------------- | :----------  |
-| `_id`      | `ObjectId` | commentId of the comment (**Primary Key**) |
-| `postId`      | `ObjectId` | postId of the post on which comment is made |
-| `userId`      | `ObjectId` | userId of the user who made the comment  |
-| `text`      | `string` | the content of the comment |
-<br>
-
-## API Reference
-
-Create a new comment on post with id postId and publishes a [CommentCreatedEvent]().
-
-```code
-  POST /api/comment/:postId
-```
+One big question is how will our gateway get the ip address of our microservices which will be required to proxy the incoming requests.\
 \
-Get the comments on a post with id postId
-
-```code
-  POST /api/comment/:postId?anchorId=
-```
-| Query Param | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `anchorId` | `string` | The returned commentsId should be greater than anchorId. (pagination) |
-
+One option is hard coding the ip addresses of the services. There is a big downside because the service may be restarted and their ip can change so it won't be communicated to the gateway.\
+So, I wrote a simple service discovery/registry using etcd [Service Discovery]().\
+This works for development.
 \
-Returns the count of comments on a post with id postId.
-
-```code
-  GET /api/comment/:postId/count
-```
 \
-Gets the current user
-
-```code
-  POST /api/auth/currentUser
-```
-<br>
-
-## Events
-
-
-#### CommentCreatedEvent
-
-
-It is fired whenever a new comment is created .
-| Attribute        | Type        | Description |   
-| :------------- |:------------- | :----------  |
-| `commentId`      | `string` | _id field of a valid [CommentCollection]() document |
-
-## Handlers
-> Handlers consumes events from NATS stream and processes them.
-### [PostCreated Handler](/comment/src/handlers/postCreatedHandler.ts)
-It captures the [PostCreatedEvent]() and processes it and add the postId to the _id field of the [ValidPostCollection]() .
+Docker provide Service discovery out of the box using Docker networks and Kuberntes also provides automatic dns using Kubernetes services so we can use that in production.
 
 <br>
 
 ## Architecture Diagram
-![image](https://user-images.githubusercontent.com/58662119/205670514-85598419-4e75-4254-b8b0-f7cd6d7c3f62.png)
+![gateway](https://user-images.githubusercontent.com/58662119/206135138-28710d82-0e3d-4dac-8104-b8ae5a363930.png)
