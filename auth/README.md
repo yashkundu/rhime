@@ -18,7 +18,7 @@ Stateless Authentication is used to make it scalable.
 > 
 
 
-#### UserCollection <br>
+### UserCollection <br>
 <br>
 
 | Attribute        | Type        | Description |   
@@ -54,13 +54,13 @@ Logs out the user by removing the cookie.
 ## Events
 
 
-#### UserCreatedEvent
+### UserCreatedEvent
 
 
 It is fired whenever a new user signs up .
 | Attribute        | Type        | Description |   
 | ------------- |:-------------: | ----------  |
-| userId      | string | _id of [UserCollection]() |
+| userId      | string | _id of [UserCollection](#usercollection-) |
 | email      | string | email id of user |
 | userName      | string      |  unique userName of user |
 <br>
@@ -68,7 +68,7 @@ It is fired whenever a new user signs up .
 ## Handlers
 > Handlers consumes events from NATS stream and processes them.
 ### [UserAuthorized Handler](/auth/src/handlers/userAuthorizedHandler.ts)
-It captures the [UserAuthorized Event](../spotify/README.md#userauthorizedevent) and processes it and makes isAuth field of [User Collection]() true.
+It captures the [UserAuthorized Event](../spotify/README.md#userauthorizedevent) and processes it and makes isAuth field of [UserCollection](#usercollection-) true.
 
 <br>
 

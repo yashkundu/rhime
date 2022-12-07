@@ -35,7 +35,7 @@ The main function of the Post service is to create and fetch posts of a particul
 
 ## API Reference
 
-Create a new post and publishes a [PostCreatedEvent]().
+Create a new post and publishes a [PostCreatedEvent](#postcreatedevent).
 
 ```code
   POST /api/post

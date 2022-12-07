@@ -55,8 +55,8 @@ Delete the previous profile image
 
 ## Handlers
 > Handlers consumes events from NATS stream and processes them.
-### [UserCreated Handler](/comment/src/handlers/postCreatedHandler.ts)
-It consumes the [UserCreatedEvent]() and processes it to create a document related to that user in [UserProfileCollection]() .
+### [UserCreated Handler](/user/src/handlers/userCreatedHandler.ts)
+It consumes the [UserCreatedEvent](../auth/README.md#usercreatedevent) and processes it to create a document related to that user in [UserProfileCollection](#userprofilecollection-) .
 
 <br>
 

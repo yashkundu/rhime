@@ -1,6 +1,6 @@
 # Recommendation Service
 
-The main function of the Recommendation service is to to perform the initialFetch job which is scheduled by the [SpotifyService]() and to perform timely update users music data and friends recommendation.
+The main function of the Recommendation service is to to perform the initialFetch job which is scheduled by the [SpotifyService](../spotify) and to perform timely update users music data and friends recommendation.
 
 <br>
 
@@ -11,17 +11,17 @@ The main function of the Recommendation service is to to perform the initialFetc
 
 
 ### TokenCollection <br>
-Same as in [SpotifyService]().
+Same as in [SpotifyService](../spotify).
 
 <br>
 
 ### ItemCollection <br>
-Same as in [SpotifyService]().
+Same as in [SpotifyService](../spotify).
 
 <br>
 
 ### RecommendCollection
-Same as in [SpotifyService]().
+Same as in [SpotifyService](../spotify).
 <br>
 
 

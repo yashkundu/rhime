@@ -8,12 +8,12 @@ The main function of the LikeCount service is fetch the number of likes on an it
 
 > Although noSQL database is used but a proper Schema is maintained.
 
-### [RTLikeCountCollection]() <br>
-Shares this collection with [LikeBatchUpdaterService](). Although it violates the microservices design pattern, but it works because one service can only read and the other can only write.
+### [RTLikeCountCollection](../like-batch-updater/README.md#rtlikecountcolletion) <br>
+Shares this collection with [LikeBatchUpdaterService](../like-batch-updater). Although it violates the microservices design pattern, but it works because one service can only read and the other can only write.
 
 
-### [DailyLikeCountCollection]() <br>
-Shares this collection with [LikeBatchUpdaterService](). Although it violates the microservices design pattern, but it works because one service can only read and the other can only write.
+### [DailyLikeCountCollection](../like-batch-updater/README.md#dailylikecountcollection) <br>
+Shares this collection with [LikeBatchUpdaterService](../like-batch-updater). Although it violates the microservices design pattern, but it works because one service can only read and the other can only write.
 
 
 <br>

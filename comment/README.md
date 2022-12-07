@@ -10,7 +10,7 @@ The main function of the Comment service is to create and fetch comments of a po
 > 
 
 
-#### ValidPostCollection <br>
+### ValidPostCollection <br>
 <br>
 
 | Attribute        | Type        | Description |   
@@ -18,7 +18,7 @@ The main function of the Comment service is to create and fetch comments of a po
 | `_id`      | `ObjectId` | postId of a valid Post (**Primary Key**) |
 <br>
 
-#### CommentCollection <br>
+### CommentCollection <br>
 <br>
 
 | Attribute        | Type        | Description |   
@@ -31,7 +31,7 @@ The main function of the Comment service is to create and fetch comments of a po
 
 ## API Reference
 
-Create a new comment on post with id postId and publishes a [CommentCreatedEvent]().
+Create a new comment on post with id postId and publishes a [CommentCreatedEvent](#commentcreatedevent).
 
 ```code
   POST /api/comment/:postId
@@ -63,18 +63,18 @@ Gets the current user
 ## Events
 
 
-#### CommentCreatedEvent
+### CommentCreatedEvent
 
 
 It is fired whenever a new comment is created .
 | Attribute        | Type        | Description |   
 | :------------- |:------------- | :----------  |
-| `commentId`      | `string` | _id field of a valid [CommentCollection]() document |
+| `commentId`      | `string` | _id field of a valid [CommentCollection](#commentcollection-) document |
 
 ## Handlers
 > Handlers consumes events from NATS stream and processes them.
 ### [PostCreated Handler](/comment/src/handlers/postCreatedHandler.ts)
-It captures the [PostCreatedEvent]() and processes it and add the postId to the _id field of the [ValidPostCollection]() .
+It captures the [PostCreatedEvent](../post/README.md#postcreatedevent) and processes it and add the postId to the _id field of the [ValidPostCollection](#validpostcollection-) .
 
 <br>
 

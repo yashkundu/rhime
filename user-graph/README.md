@@ -105,8 +105,8 @@ It published when a user follows or unfollows another user.
 
 ## Handlers
 > Handlers consumes events from NATS stream and processes them.
-### [UserCreated Handler](/comment/src/handlers/postCreatedHandler.ts)
-It captures the [UserCreatedEvent]() and processes it and initializes a document for that user in [ValidUserCollection]() .
+### [UserCreated Handler](/user-graph/src/handlers/userCreatedHandler.ts)
+It captures the [UserCreatedEvent](../auth/README.md#usercreatedevent) and processes it and initializes a document for that user in [ValidUserCollection](#validusercollection-) .
 
 <br>
 

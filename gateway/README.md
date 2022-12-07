@@ -2,8 +2,8 @@
 
 This acts as an [API Gateway](https://www.ibm.com/cloud/blog/api-gateway) for our microservices.\
 The two main function of this is : 
-- It authenticates all the incoming requests in which authentication is required as mentioned in [config.ts]() file.
-- It proxies all the requests to their respective microservices according to the endpoints provided in [config.ts]() file.
+- It authenticates all the incoming requests in which authentication is required as mentioned in [config.ts](/gateway/src/config.ts) file.
+- It proxies all the requests to their respective microservices according to the endpoints provided in [config.ts](/gateway/src/config.ts) file.
 
 <br>
 
@@ -12,7 +12,7 @@ The two main function of this is :
 One big question is how will our gateway get the ip address of our microservices which will be required to proxy the incoming requests.\
 \
 One option is hard coding the ip addresses of the services. There is a big downside because the service may be restarted and their ip can change so it won't be communicated to the gateway.\
-So, I wrote a simple service discovery/registry using etcd [Service Discovery]().\
+So, I wrote a simple service discovery/registry using etcd [Service Discovery](https://github.com/yashkundu/discovery-rhime).\
 This works for development.
 \
 \

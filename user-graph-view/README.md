@@ -7,11 +7,11 @@ The main function of the UserGraphView service is to provide remote procedures t
 
 ## Database (userGraph)
 
-### [MinionCollection]()
-Shares with [UserGraphService]()
+### [MinionCollection](../user-graph/README.md#minioncollection)
+Shares with [UserGraphService](../user-graph)
 
-### [MessiahCollection]()
-Shares with [UserGraphService]()
+### [MessiahCollection](../user-graph/README.md#messiahcollection)
+Shares with [UserGraphService](../user-graph)
 
 <br>
 
@@ -38,7 +38,7 @@ Streams the followees of a user
 
 ## Architecture
 
-### [gRPC] over REST API
+### [gRPC](https://grpc.io/) over REST API
 Since, this service only communicates with other services, and not external clients so gRPC will be fine because it is much lightweight than REST.
 
 ## Architecture Diagram
